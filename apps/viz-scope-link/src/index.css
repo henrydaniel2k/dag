@@ -1,0 +1,227 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
+All colors MUST be HSL.
+*/
+
+@layer base {
+  :root {
+    /* Enterprise monitoring theme - dark */
+    --background: 217 33% 7%;
+    --foreground: 213 27% 95%;
+
+    --card: 217 33% 10%;
+    --card-foreground: 213 27% 95%;
+
+    --popover: 217 33% 8%;
+    --popover-foreground: 213 27% 95%;
+
+    --primary: 160 84% 39%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 217 33% 15%;
+    --secondary-foreground: 213 27% 95%;
+
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 187 85% 43%;
+    --accent-foreground: 217 33% 7%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 210 40% 98%;
+
+    --success: 142 71% 45%;
+    --success-foreground: 210 40% 98%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 217 33% 7%;
+
+    --border: 217 33% 20%;
+    --input: 217 33% 20%;
+    --ring: 160 84% 39%;
+
+    --radius: 0.75rem;
+
+    /* Graph-specific tokens */
+    --graph-bg: 217 33% 6%;
+    --graph-grid: 217 33% 12%;
+    --node-default: 217 33% 15%;
+    --node-selected: 160 84% 39%;
+    --node-hover: 217 33% 20%;
+    --link-default: 215 20% 50%;
+    --link-hop: 187 85% 43%;
+
+    /* Panel tokens */
+    --panel-bg: 217 33% 9%;
+    --panel-border: 217 33% 18%;
+    
+    --sidebar-background: 217 33% 8%;
+    --sidebar-foreground: 213 27% 95%;
+    --sidebar-primary: 160 84% 39%;
+    --sidebar-primary-foreground: 210 40% 98%;
+    --sidebar-accent: 217 33% 15%;
+    --sidebar-accent-foreground: 213 27% 95%;
+    --sidebar-border: 217 33% 18%;
+    --sidebar-ring: 160 84% 39%;
+
+    /* GoJS-specific tokens (dark) */
+    --gojs-node-fill: 217 33% 15%;
+    --gojs-node-stroke: 215 16% 47%;
+    --gojs-node-text: 213 27% 95%;
+    --gojs-node-text-muted: 215 20% 65%;
+    --gojs-metric-text: 160 84% 50%;
+    --gojs-alert-text: 0 91% 71%;
+    --gojs-highlight-fill: 160 84% 25%;
+    --gojs-highlight-stroke: 160 84% 50%;
+    --gojs-selection-stroke: 160 84% 50%;
+    --gojs-link-stroke: 215 16% 47%;
+    --gojs-hop-stroke: 187 85% 43%;
+    --gojs-meta-fill: 217 91% 10%;
+    --gojs-meta-stroke: 160 84% 50%;
+    --gojs-tooltip-fill: 217 33% 15%;
+    --gojs-tooltip-stroke: 215 16% 47%;
+    --gojs-tooltip-text: 213 27% 95%;
+    --gojs-icon-fill: 160 84% 50%;
+    --gojs-icon-stroke: 160 84% 50%;
+    --gojs-primary: 160 84% 50%;
+
+    /* Quick chip colors - visible state (dark) */
+    --chip-visible-bg: 160 84% 39% / 0.2;
+    --chip-visible-border: 160 84% 39% / 0.4;
+    --chip-visible-text: 160 84% 50%;
+    
+    /* Quick chip colors - hidden state (dark) */
+    --chip-hidden-bg: transparent;
+    --chip-hidden-border: 217 33% 20%;
+    --chip-hidden-text: 215 20% 65%;
+    
+    /* Badge colors (dark) - neutral and calm system */
+    --badge-neutral-bg: 217 33% 17% / 0.4;
+    --badge-neutral-text: 215 20% 65%;
+    --badge-neutral-border: 217 33% 20%;
+    
+    /* State badge - PARTIAL (calm teal/blue) */
+    --badge-partial-bg: 200 60% 50% / 0.2;
+    --badge-partial-text: 200 60% 60%;
+    --badge-partial-border: 200 60% 50% / 0.3;
+  }
+
+  .light {
+    /* OpenAI-like professional light theme with sustainable greens */
+    --background: 150 15% 97%;
+    --foreground: 160 30% 15%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 160 30% 15%;
+    
+    --popover: 0 0% 100%;
+    --popover-foreground: 160 30% 15%;
+    
+    --primary: 160 84% 39%;
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 150 10% 96%;
+    --secondary-foreground: 160 30% 15%;
+    
+    --muted: 150 10% 96%;
+    --muted-foreground: 150 8% 46%;
+    
+    --accent: 173 80% 40%;
+    --accent-foreground: 0 0% 100%;
+    
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+    
+    --warning: 38 92% 50%;
+    --warning-foreground: 160 30% 15%;
+    
+    --border: 150 10% 91%;
+    --input: 150 10% 91%;
+    --ring: 160 84% 39%;
+    
+    --radius: 0.75rem;
+
+    /* Graph-specific tokens (light) */
+    --graph-bg: 150 15% 98%;
+    --graph-grid: 150 10% 93%;
+    --node-default: 0 0% 100%;
+    --node-selected: 160 84% 39%;
+    --node-hover: 150 15% 95%;
+    --link-default: 150 8% 58%;
+    --link-hop: 173 80% 40%;
+
+    /* Panel tokens (light) */
+    --panel-bg: 0 0% 100%;
+    --panel-border: 150 10% 91%;
+
+    /* Sidebar tokens (light) */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 160 30% 15%;
+    --sidebar-primary: 160 84% 39%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 150 10% 96%;
+    --sidebar-accent-foreground: 160 30% 15%;
+    --sidebar-border: 150 10% 91%;
+    --sidebar-ring: 160 84% 39%;
+
+    /* GoJS-specific tokens (light) - professional, crisp */
+    --gojs-node-fill: 0 0% 100%;
+    --gojs-node-stroke: 150 10% 85%;
+    --gojs-node-text: 160 30% 15%;
+    --gojs-node-text-muted: 150 8% 46%;
+    --gojs-metric-text: 160 84% 39%;
+    --gojs-alert-text: 0 72% 51%;
+    --gojs-highlight-fill: 160 84% 96%;
+    --gojs-highlight-stroke: 160 84% 39%;
+    --gojs-selection-stroke: 160 84% 39%;
+    --gojs-link-stroke: 150 8% 58%;
+    --gojs-hop-stroke: 173 80% 40%;
+    --gojs-meta-fill: 160 45% 97%;
+    --gojs-meta-stroke: 160 84% 39%;
+    --gojs-tooltip-fill: 0 0% 100%;
+    --gojs-tooltip-stroke: 150 10% 85%;
+    --gojs-tooltip-text: 160 30% 15%;
+    --gojs-icon-fill: 160 84% 39%;
+    --gojs-icon-stroke: 160 84% 39%;
+    --gojs-primary: 160 84% 39%;
+
+    /* Quick chip colors - visible state (light) */
+    --chip-visible-bg: 160 84% 39% / 0.15;
+    --chip-visible-border: 160 84% 39% / 0.3;
+    --chip-visible-text: 160 84% 39%;
+    
+    /* Quick chip colors - hidden state (light) */
+    --chip-hidden-bg: transparent;
+    --chip-hidden-border: 150 10% 91%;
+    --chip-hidden-text: 150 8% 46%;
+    
+    /* Badge colors (light) - neutral and calm system */
+    --badge-neutral-bg: 150 10% 96% / 0.6;
+    --badge-neutral-text: 150 8% 46%;
+    --badge-neutral-border: 150 10% 91%;
+    
+    /* State badge - PARTIAL (calm teal/blue) */
+    --badge-partial-bg: 200 70% 50% / 0.15;
+    --badge-partial-text: 200 70% 40%;
+    --badge-partial-border: 200 70% 50% / 0.3;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
