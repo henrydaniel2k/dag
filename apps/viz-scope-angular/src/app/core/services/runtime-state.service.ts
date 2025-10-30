@@ -556,44 +556,27 @@ export class RuntimeStateService {
   private readonly hopsService = inject(HopsService);
   private readonly topologyService = inject(TopologyService);
 
-  // Available variables for metric overlay
-  readonly availableVariables = signal<Variable[]>([
-    {
-      id: 'power',
-      name: 'Power',
-      type: 'extensive',
-      unit: 'kW',
-      sit: 15,
-      isIntegrated: true,
-    },
-    {
-      id: 'temperature',
-      name: 'Temperature',
-      type: 'intensive',
-      unit: '°C',
-      sit: 5,
-      isIntegrated: true,
-    },
-    {
-      id: 'voltage',
-      name: 'Voltage',
-      type: 'intensive',
-      unit: 'V',
-      sit: 15,
-      isIntegrated: false,
-    },
-    {
-      id: 'current',
-      name: 'Current',
-      type: 'extensive',
-      unit: 'A',
-      sit: 15,
-      isIntegrated: false,
-    },
-  ]);
+  // Available variables for metric overlay (loaded from mock data)
+  readonly availableVariables = signal<Variable[]>([]);
 
   constructor() {
     this.setupEffects();
+    this.loadAvailableVariables();
+  }
+
+  /**
+   * Load available variables from mock data
+   */
+  private async loadAvailableVariables(): Promise<void> {
+    try {
+      const { availableVariables } = await import(
+        '../../../assets/mocks/topologies'
+      );
+      this.availableVariables.set(availableVariables);
+      console.log('✅ Available variables loaded:', availableVariables.length);
+    } catch (err) {
+      console.error('Failed to load available variables:', err);
+    }
   }
 
   //

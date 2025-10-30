@@ -168,6 +168,34 @@ export class RuntimePageComponent {
   constructor() {
     // Component initialization
     console.log('[RuntimePage] Initialized');
+
+    // Auto-select first MSN when topology loads
+    this.autoSelectDefaultMsn();
+  }
+
+  /**
+   * Auto-select the first available MSN (root node) in the current topology
+   */
+  private autoSelectDefaultMsn(): void {
+    // Wait a bit for topology to load
+    setTimeout(() => {
+      const topology = this.runtimeState.topology();
+      if (
+        topology &&
+        topology.nodes.size > 0 &&
+        !this.runtimeState.selectedMsn()
+      ) {
+        // Find first root node (node with no parents)
+        const rootNode = Array.from(topology.nodes.values()).find(
+          (node) => node.parents.length === 0
+        );
+
+        if (rootNode) {
+          console.log('[RuntimePage] Auto-selecting MSN:', rootNode.id);
+          this.runtimeState.setSelectedMsn(rootNode.id);
+        }
+      }
+    }, 500);
   }
 
   openNodeTypePanel(): void {

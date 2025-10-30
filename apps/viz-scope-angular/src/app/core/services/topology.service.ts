@@ -72,14 +72,39 @@ export class TopologyService {
   });
 
   constructor() {
-    // TODO: Load topologies from mock data or API
-    // For now, initialize with empty maps
-    this.initializeEmptyTopologies();
+    // Load mock data immediately
+    this.loadMockData();
+  }
+
+  /**
+   * Load mock data from assets
+   * This simulates data loading and populates topologies
+   */
+  private async loadMockData(): Promise<void> {
+    try {
+      // Import mock data
+      const { electricalTopology, coolingTopology } = await import(
+        '../../../assets/mocks/topologies'
+      );
+
+      // Set topologies
+      this._electricalTopology.set(electricalTopology);
+      this._coolingTopology.set(coolingTopology);
+
+      console.log('✅ Mock topologies loaded:', {
+        electrical: electricalTopology.nodes.size,
+        cooling: coolingTopology.nodes.size,
+      });
+    } catch (err) {
+      console.error('Failed to load mock topologies:', err);
+      // Initialize with empty topologies as fallback
+      this.initializeEmptyTopologies();
+    }
   }
 
   /**
    * Initialize empty topologies
-   * This will be replaced with actual data loading
+   * Used as fallback if mock data fails to load
    */
   private initializeEmptyTopologies(): void {
     this._electricalTopology.set({
