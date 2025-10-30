@@ -4,16 +4,12 @@
  */
 
 import { Injectable } from '@angular/core';
-import { Link, NodeType, Topology, getNode } from '../../models';
+import { Link, NodeType, Topology } from '../../models';
 
 /**
  * Hop link interface (extends Link with hop-specific properties)
  */
-export interface HopLink {
-  readonly id: string;
-  readonly source: string;
-  readonly target: string;
-  readonly topology: string;
+export interface HopLink extends Link {
   readonly isHop: true;
   readonly viaNodes: readonly string[];
 }
@@ -40,7 +36,7 @@ export class HopsService {
 
     // For each visible node, find paths to other visible nodes that go through hidden nodes
     for (const startNodeId of visibleNodeIds) {
-      const startNode = getNode(topology, startNodeId);
+      const startNode = topology.nodes.get(startNodeId);
       if (!startNode) continue;
 
       // BFS to find all reachable visible nodes through hidden nodes
@@ -57,12 +53,12 @@ export class HopsService {
         if (visited.has(nodeId)) continue;
         visited.add(nodeId);
 
-        const node = getNode(topology, nodeId);
+        const node = topology.nodes.get(nodeId);
         if (!node) continue;
 
         // Check children
         for (const childId of node.children) {
-          const child = getNode(topology, childId);
+          const child = topology.nodes.get(childId);
           if (!child) continue;
 
           const newPath = [...path];
@@ -119,7 +115,7 @@ export class HopsService {
     }
 
     const nodeNames = hopLink.viaNodes.map(
-      (id) => getNode(topology, id)?.name || id
+      (id) => topology.nodes.get(id)?.name || id
     );
 
     // If more than 3 nodes, show first 3 and "+ N more"

@@ -12,18 +12,16 @@
  * - Theme application
  */
 
-import { Injectable, signal, effect, WritableSignal } from '@angular/core';
-import * as go from 'gojs';
 import {
-  Node,
-  Link,
-  MetaNode,
-  Topology,
-  Variable,
-  getBranchNodes,
-  ScopeResult,
-  HiddenBranchInfo,
-} from '../../models';
+  Injectable,
+  signal,
+  effect,
+  WritableSignal,
+  inject,
+} from '@angular/core';
+import * as go from 'gojs';
+import { Topology, Node, Link, MetaNode, Variable } from '../../models';
+import type { ScopeResult, HiddenBranchInfo } from './scope.service';
 import { NodeIconService } from './node-icon.service';
 import { ThemeService } from './theme.service';
 import { ScopeService } from './scope.service';
@@ -102,14 +100,14 @@ export class GojsService {
   private previousNodeKeys = new Set<string>();
   private previousLinkKeys = new Set<string>();
 
-  constructor(
-    private readonly nodeIconService: NodeIconService,
-    private readonly themeService: ThemeService,
-    private readonly scopeService: ScopeService
-  ) {
+  private readonly nodeIconService = inject(NodeIconService);
+  private readonly themeService = inject(ThemeService);
+  private readonly scopeService = inject(ScopeService);
+
+  constructor() {
     // Apply theme changes to diagram
     effect(() => {
-      const theme = this.themeService.theme();
+      this.themeService.theme(); // Track theme signal
       if (this.diagram) {
         this.themeService.applyTheme(this.diagram);
       }
@@ -314,14 +312,14 @@ export class GojsService {
         { strokeWidth: 2 },
         new go.Binding('fill', '', function (data, obj) {
           const theme = (obj.part?.diagram?.model as go.GraphLinksModel)
-            ?.modelData?.theme;
+            ?.modelData?.['theme'];
           if (!theme) return '#1e293b';
           if (data.isHighlighted) return theme.highlightFill;
           return theme.nodeFill;
         }),
         new go.Binding('stroke', '', function (data, obj) {
           const theme = (obj.part?.diagram?.model as go.GraphLinksModel)
-            ?.modelData?.theme;
+            ?.modelData?.['theme'];
           if (!theme) return '#475569';
           if (data.isHighlighted) return theme.highlightStroke;
           return theme.nodeStroke;
@@ -483,7 +481,7 @@ export class GojsService {
         new go.Binding('strokeWidth', 'isHighlighted', (h) => (h ? 3 : 2)),
         new go.Binding('stroke', '', function (data, obj) {
           const theme = (obj.part?.diagram?.model as go.GraphLinksModel)
-            ?.modelData?.theme;
+            ?.modelData?.['theme'];
           if (!theme) return '#64748b';
           return data.isHighlighted ? theme.highlightStroke : theme.linkStroke;
         })
@@ -493,13 +491,13 @@ export class GojsService {
         { toArrow: 'Standard' },
         new go.Binding('stroke', '', function (data, obj) {
           const theme = (obj.part?.diagram?.model as go.GraphLinksModel)
-            ?.modelData?.theme;
+            ?.modelData?.['theme'];
           if (!theme) return '#64748b';
           return data.isHighlighted ? theme.highlightStroke : theme.linkStroke;
         }),
         new go.Binding('fill', '', function (data, obj) {
           const theme = (obj.part?.diagram?.model as go.GraphLinksModel)
-            ?.modelData?.theme;
+            ?.modelData?.['theme'];
           if (!theme) return '#64748b';
           return data.isHighlighted ? theme.highlightStroke : theme.linkStroke;
         })
@@ -700,8 +698,8 @@ export class GojsService {
 
     // Calculate branch nodes for highlighting
     const branchNodeIds =
-      highlightedBranchRoot && scope
-        ? getBranchNodes(highlightedBranchRoot, topology)
+      highlightedBranchRoot && topology
+        ? this.scopeService.getBranchNodes(highlightedBranchRoot, topology)
         : new Set<string>();
 
     // Build next node data
@@ -728,7 +726,9 @@ export class GojsService {
 
       // Check if this node can be a branch root
       const nodeBranchSize =
-        node.children.length > 0 ? getBranchNodes(node.id, topology).size : 0;
+        node.children.length > 0
+          ? this.scopeService.getBranchNodes(node.id, topology).size
+          : 0;
       const canOpenBranch = nodeBranchSize > 1;
 
       // Get icon geometry

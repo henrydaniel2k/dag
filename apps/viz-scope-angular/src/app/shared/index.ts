@@ -4,14 +4,14 @@
  */
 
 // Components
-export * from './components/node-type-icon/node-type-icon.component';
-export * from './components/visibility-chip/visibility-chip.component';
-export * from './components/quick-node-type-chip/quick-node-type-chip.component';
-export * from './components/hidden-branch-cue/hidden-branch-cue.component';
+// export * from './components/node-type-icon/node-type-icon.component'; // TODO: Task 8
+// export * from './components/visibility-chip/visibility-chip.component'; // TODO: Task 8
+// export * from './components/quick-node-type-chip/quick-node-type-chip.component'; // TODO: Task 8
+// export * from './components/hidden-branch-cue/hidden-branch-cue.component'; // TODO: Task 8
 
 // Pipes
-export * from './pipes/type-index.pipe';
-export * from './pipes/metric-format.pipe';
+// export * from './pipes/type-index.pipe'; // TODO: Task 8
+// export * from './pipes/metric-format.pipe'; // TODO: Task 8
 
 // Directives
 // TODO: Add directives as needed

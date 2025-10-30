@@ -13,7 +13,7 @@
  * All state is exposed as readonly signals with controlled update methods.
  */
 
-import { Injectable, signal, computed, effect } from '@angular/core';
+import { Injectable, signal, computed, effect, inject } from '@angular/core';
 import {
   TopologyType,
   NodeType,
@@ -23,12 +23,12 @@ import {
   Node,
   Link,
   Topology,
-  ScopeResult,
-  getBranchNodes,
+} from '../../models';
+import {
   isTimeWindowValidForSIT,
   getMinimumTimeWindow,
-} from '../../models';
-import { ScopeService } from './scope.service';
+} from '../../models/time-window.model';
+import { ScopeService, ScopeResult } from './scope.service';
 import { FoldingService } from './folding.service';
 import { HopsService } from './hops.service';
 import { TopologyService } from './topology.service';
@@ -316,7 +316,7 @@ export class RuntimeStateService {
     hiddenRoots.forEach((rootId) => {
       if (!before.has(rootId)) return; // Root not visible by type filter
 
-      const branch = getBranchNodes(rootId, topo);
+      const branch = this.scopeService.getBranchNodes(rootId, topo);
       branch.forEach((nodeId: string) => {
         if (before.has(nodeId)) {
           hiddenNodes.add(nodeId);
@@ -537,12 +537,12 @@ export class RuntimeStateService {
   readonly hiddenBranchRoots = this._hiddenBranchRoots.asReadonly();
   readonly contextMenuState = this._contextMenuState.asReadonly();
 
-  constructor(
-    private readonly scopeService: ScopeService,
-    private readonly foldingService: FoldingService,
-    private readonly hopsService: HopsService,
-    private readonly topologyService: TopologyService
-  ) {
+  private readonly scopeService = inject(ScopeService);
+  private readonly foldingService = inject(FoldingService);
+  private readonly hopsService = inject(HopsService);
+  private readonly topologyService = inject(TopologyService);
+
+  constructor() {
     this.setupEffects();
   }
 
@@ -563,7 +563,7 @@ export class RuntimeStateService {
         // Find first root node
         const rootNode = Array.from(topo.nodes.values()).find(
           (node: Node) => node.parents.length === 0
-        );
+        ) as Node | undefined;
         this._selectedMsn.set(rootNode?.id || null);
         this._selectedNode.set(null);
       }
@@ -645,8 +645,11 @@ export class RuntimeStateService {
       const msnNode = topo.nodes.get(msn);
       if (!msnNode) return;
 
-      if (!isTimeWindowValidForSIT(window, metric, msnNode)) {
-        const minWindow = getMinimumTimeWindow(metric, msnNode);
+      // Get SIT (Sample Interval Time) from metric variable
+      const sit = metric.sit || 0;
+
+      if (!isTimeWindowValidForSIT(window, sit)) {
+        const minWindow = getMinimumTimeWindow(sit);
         this._timeWindow.set(minWindow);
         // TODO: Show toast notification
         console.log(`Time window adjusted to ${minWindow}`);

@@ -54,9 +54,12 @@ export class GraphCanvasComponent implements OnInit, OnDestroy {
   private readonly runtimeState = inject(RuntimeStateService);
   private readonly gojsService = inject(GojsService);
 
+  constructor() {
+    this.setupEffects();
+  }
+
   ngOnInit(): void {
     this.initializeDiagram();
-    this.setupEffects();
   }
 
   ngOnDestroy(): void {

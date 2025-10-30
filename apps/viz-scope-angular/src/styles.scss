@@ -1,13 +1,13 @@
 /* You can add global styles to this file, and also import other style files */
 
 // Import ng-zorro-antd styles
-@import 'ng-zorro-antd/ng-zorro-antd.scss';
+// @import 'ng-zorro-antd/ng-zorro-antd.scss'; // Temporarily disabled - install ng-zorro first
 
-// Import theme variables and customizations
-@import './styles/themes/variables';
-@import './styles/themes/light-theme';
-@import './styles/themes/dark-theme';
-@import './styles/gojs-theme';
+// Theme variables and custom CSS
+@use './styles/themes/variables';
+@use './styles/themes/light-theme';
+@use './styles/themes/dark-theme';
+@use './styles/gojs-theme';
 
 // Global resets and base styles
 * {
