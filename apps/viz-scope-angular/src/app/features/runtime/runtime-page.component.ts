@@ -211,6 +211,9 @@ export class RuntimePageComponent {
    * Handles context menu actions
    */
   onContextMenuAction(action: ContextMenuAction): void {
+    // Close context menu first to reset state
+    this.runtimeState.closeContextMenu();
+
     switch (action.type) {
       case 'open-data-panel':
         if (action.nodeId) {

@@ -566,6 +566,26 @@ export class GojsService {
             this.callbacks().onMetaNodeClick!(node.data.metaNodeData);
           }
         },
+        contextClick: (e: go.InputEvent, obj: go.GraphObject) => {
+          e.handled = true; // Prevent default context menu
+          const node = obj.part as go.Node;
+          // For meta-nodes, get the first node ID from the meta-node data
+          if (node.data.metaNodeData && this.callbacks().onContextMenu) {
+            const metaNode = node.data.metaNodeData as MetaNode;
+            const firstNodeId = metaNode.nodeIds[0]; // Use first node as representative
+            const dg = node.diagram;
+            if (dg && firstNodeId) {
+              const viewPoint = dg.transformDocToView(e.documentPoint);
+              const canvasRect = dg.div!.getBoundingClientRect();
+              this.callbacks().onContextMenu!({
+                nodeId: firstNodeId,
+                x: canvasRect.left + viewPoint.x,
+                y: canvasRect.top + viewPoint.y,
+                canOpenBranch: false, // Meta-nodes don't have branch operations
+              });
+            }
+          }
+        },
       },
       $(
         go.Shape,

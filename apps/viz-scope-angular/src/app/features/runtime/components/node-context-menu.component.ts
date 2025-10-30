@@ -141,15 +141,21 @@ export class NodeContextMenuComponent {
 
   @Input({ required: true }) set menuState(state: ContextMenuState | null) {
     const prevState = this._menuState();
+
+    // Always update the state
     this._menuState.set(state);
-    // Auto-open menu when state changes from null to non-null
-    if (state && !prevState) {
+
+    if (!state) {
+      // Close menu when state becomes null
+      if (prevState) {
+        setTimeout(() => this.menuTrigger?.closeMenu(), 10);
+      }
+    } else {
+      // Open menu for any non-null state
+      // This handles both first open and subsequent opens after the menu was closed
       setTimeout(() => this.openMenu(), 10);
-    } else if (!state && prevState) {
-      setTimeout(() => this.menuTrigger?.closeMenu(), 10);
     }
   }
-
   @Input() allScopeNodes: Node[] = [];
   @Input() hiddenBranchRoots = new Set<string>();
   @Input() visibleIdsBeforeFold = new Set<string>();
@@ -167,20 +173,25 @@ export class NodeContextMenuComponent {
   });
 
   openMenu(): void {
-    // Close existing menu first
-    if (this.menuTrigger.menuOpen) {
+    // Close existing menu first if it's open
+    if (this.menuTrigger?.menuOpen) {
       this.menuTrigger.closeMenu();
     }
 
-    // Small delay to allow state update
+    // Small delay to allow cleanup, then open
     setTimeout(() => {
-      this.menuTrigger.openMenu();
-    }, 10);
+      if (this.menuTrigger) {
+        this.menuTrigger.openMenu();
+      }
+    }, 20);
   }
 
   closeMenu(): void {
-    this.menuTrigger.closeMenu();
-    this._menuState.set(null);
+    if (this.menuTrigger?.menuOpen) {
+      this.menuTrigger.closeMenu();
+    }
+    // Note: We don't set state to null here because the parent (RuntimePage)
+    // should call closeContextMenu() on the service to properly reset state
   }
 
   canShowFoldOption(node: Node): boolean {
