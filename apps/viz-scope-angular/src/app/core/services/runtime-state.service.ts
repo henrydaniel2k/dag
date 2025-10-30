@@ -283,6 +283,20 @@ export class RuntimeStateService {
   });
 
   /**
+   * All nodes in the current scope (regardless of visibility)
+   */
+  readonly allScopeNodes = computed<Node[]>(() => {
+    const s = this.scope();
+    const topo = this.topology();
+
+    if (!s) return [];
+
+    return Array.from(s.nodes)
+      .map((id) => topo.nodes.get(id))
+      .filter((n): n is Node => !!n);
+  });
+
+  /**
    * Visible IDs before folding (after applying hiddenTypes filter)
    */
   readonly visibleIdsBeforeFold = computed<Set<string>>(() => {

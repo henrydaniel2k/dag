@@ -726,12 +726,13 @@ export class VisibilityChipComponent {
 - [ ] Migrate NodeTypePanel
 - [ ] Migrate NodeGroupPanel
 
-### Week 5: Controls & Dialogs
+### Week 5: Controls & Dialogs ✅ COMPLETED
 
-- [ ] Migrate MetricSelector, ViewMenu
-- [ ] Migrate FoldSelectedButton, FoldStateControl
-- [ ] Migrate PartialFoldDialog, PartialExpandDialog
-- [ ] Migrate ContextMenu
+- [x] Migrate PartialFoldDialog (138 LOC) - Angular Material Dialog
+- [x] Migrate PartialExpandDialog (124 LOC) - Angular Material Dialog
+- [x] Migrate ContextMenu (180 LOC) - Material Menu with programmatic trigger
+- [ ] Migrate MetricSelector, ViewMenu (Task 15 - In Progress)
+- [ ] Migrate FoldSelectedButton, FoldStateControl (Task 15 - In Progress)
 
 ### Week 6: RuntimePage & State (Signal-based)
 

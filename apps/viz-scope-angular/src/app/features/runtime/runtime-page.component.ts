@@ -19,6 +19,11 @@ import { NavigationComponent } from './components/navigation.component';
 import { QuickNodeTypeControlsComponent } from './components/quick-node-type-controls.component';
 import { NodeTypePanelComponent } from './components/node-type-panel.component';
 import { NodeDataPanelComponent } from './components/node-data-panel.component';
+import {
+  NodeContextMenuComponent,
+  ContextMenuState,
+  ContextMenuAction,
+} from './components/node-context-menu.component';
 import { RuntimeStateService } from '../../core/services/runtime-state.service';
 
 @Component({
@@ -31,6 +36,7 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
     QuickNodeTypeControlsComponent,
     NodeTypePanelComponent,
     NodeDataPanelComponent,
+    NodeContextMenuComponent,
   ],
   template: `
     <div class="flex h-screen bg-background">
@@ -98,6 +104,17 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
       [isOpen]="isNodeTypePanelOpen()"
       (openChange)="isNodeTypePanelOpen.set($event)"
     />
+
+    <!-- Context Menu -->
+    <app-node-context-menu
+      #contextMenu
+      [menuState]="contextMenuState"
+      [allScopeNodes]="runtimeState.allScopeNodes()"
+      [hiddenBranchRoots]="runtimeState.hiddenBranchRoots()"
+      [visibleIdsBeforeFold]="runtimeState.visibleIdsBeforeFold()"
+      [canOpenBranch]="false"
+      (action)="onContextMenuAction($event)"
+    />
   `,
   styles: [
     `
@@ -111,12 +128,14 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
 })
 export class RuntimePageComponent {
   @ViewChild(GraphCanvasComponent) graphCanvas?: GraphCanvasComponent;
+  @ViewChild('contextMenu') contextMenu?: NodeContextMenuComponent;
 
   // Inject state service (public for template access)
   readonly runtimeState = inject(RuntimeStateService);
 
   // Panel state
   isNodeTypePanelOpen = signal(false);
+  contextMenuState = signal<ContextMenuState | null>(null);
 
   constructor() {
     // Component initialization
@@ -125,5 +144,63 @@ export class RuntimePageComponent {
 
   openNodeTypePanel(): void {
     this.isNodeTypePanelOpen.set(true);
+  }
+
+  /**
+   * Opens context menu at the given position
+   * Called from GraphCanvas on right-click
+   */
+  openContextMenu(state: ContextMenuState): void {
+    this.contextMenuState.set(state);
+    // Trigger menu to open
+    setTimeout(() => {
+      this.contextMenu?.openMenu();
+    }, 10);
+  }
+
+  /**
+   * Handles context menu actions
+   */
+  onContextMenuAction(action: ContextMenuAction): void {
+    switch (action.type) {
+      case 'open-data-panel':
+        if (action.nodeId) {
+          this.runtimeState.setSelectedNode(action.nodeId);
+        }
+        break;
+
+      case 'set-msn':
+        if (action.nodeId) {
+          this.runtimeState.setSelectedMsn(action.nodeId);
+        }
+        break;
+
+      case 'fold-node':
+        if (action.nodeId) {
+          this.runtimeState.foldNodes([action.nodeId]);
+        }
+        break;
+
+      case 'open-branch-panel':
+        // TODO: Implement branch panel
+        console.log('[RuntimePage] Open branch panel:', action.nodeId);
+        break;
+
+      case 'open-node-type-panel':
+        this.openNodeTypePanel();
+        break;
+
+      case 'hide-branch':
+        if (action.nodeId) {
+          this.runtimeState.hideBranch(action.nodeId);
+        }
+        break;
+
+      case 'unhide-branch':
+        if (action.nodeId) {
+          this.runtimeState.unhideBranch(action.nodeId);
+        }
+        break;
+    }
   }
 }
