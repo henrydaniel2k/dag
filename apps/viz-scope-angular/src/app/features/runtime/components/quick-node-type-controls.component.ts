@@ -3,7 +3,13 @@
  * Toolbar with quick access chips for toggling node type visibility
  */
 
-import { Component, computed, inject } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  Output,
+  EventEmitter,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuickNodeTypeChipComponent } from './quick-node-type-chip.component';
 import { RuntimeStateService } from '../../../core/services/runtime-state.service';
@@ -63,6 +69,8 @@ import { NodeType } from '../../../models';
 })
 export class QuickNodeTypeControlsComponent {
   private readonly runtimeState = inject(RuntimeStateService);
+
+  @Output() openPanel = new EventEmitter<void>();
 
   // State from RuntimeStateService
   readonly scopeTypes = this.runtimeState.scopeTypes;
@@ -141,10 +149,8 @@ export class QuickNodeTypeControlsComponent {
 
   /**
    * Open the Node Type Panel
-   * TODO: Implement panel opening logic when panel is created
    */
   onOpenNodeTypePanel(): void {
-    console.log('[QuickNodeTypeControls] Open Node Type Panel - TODO');
-    // Will be implemented when NodeTypePanel is created
+    this.openPanel.emit();
   }
 }

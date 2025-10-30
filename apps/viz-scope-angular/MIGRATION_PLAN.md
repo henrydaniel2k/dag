@@ -917,13 +917,14 @@ constructor() {
 export class DataService {
   // RxJS for HTTP
   private dataApi$ = this.http.get<Data[]>('/api/data');
+  readonly http = inject(HttpClient);
 
   // Signal for state
   private _data = signal<Data[]>([]);
   readonly data = this._data.asReadonly();
 
   // Convert Observable to Signal
-  constructor(http: HttpClient) {
+  constructor() {
     this.dataApi$.subscribe((data) => this._data.set(data));
 
     // Or use toSignal()

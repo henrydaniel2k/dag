@@ -12,11 +12,13 @@
  * - Floating controls (quick type controls, fold selected button, dock)
  */
 
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, ViewChild, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GraphCanvasComponent } from './components/graph-canvas.component';
 import { NavigationComponent } from './components/navigation.component';
 import { QuickNodeTypeControlsComponent } from './components/quick-node-type-controls.component';
+import { NodeTypePanelComponent } from './components/node-type-panel.component';
+import { NodeDataPanelComponent } from './components/node-data-panel.component';
 import { RuntimeStateService } from '../../core/services/runtime-state.service';
 
 @Component({
@@ -27,6 +29,8 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
     GraphCanvasComponent,
     NavigationComponent,
     QuickNodeTypeControlsComponent,
+    NodeTypePanelComponent,
+    NodeDataPanelComponent,
   ],
   template: `
     <div class="flex h-screen bg-background">
@@ -58,7 +62,9 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
         >
           <!-- Quick Controls -->
           <div class="flex-1 flex flex-col">
-            <app-quick-node-type-controls></app-quick-node-type-controls>
+            <app-quick-node-type-controls
+              (openPanel)="openNodeTypePanel()"
+            ></app-quick-node-type-controls>
 
             <!-- GraphCanvas -->
             <div class="flex-1 overflow-hidden relative">
@@ -66,18 +72,10 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
             </div>
           </div>
 
-          <!-- Side Panels (TODO: Task 8) -->
-          <div
-            *ngIf="runtimeState.selectedNode()"
-            class="w-96 border-l border-border bg-card"
-          >
-            <div class="p-4">
-              <h3 class="text-lg font-semibold">Node Data Panel</h3>
-              <p class="text-sm text-muted-foreground">
-                Node ID: {{ runtimeState.selectedNode() }}
-              </p>
-            </div>
-          </div>
+          <!-- Node Data Panel -->
+          @if (runtimeState.selectedNode()) {
+          <app-node-data-panel />
+          }
         </div>
 
         <!-- Other Views (TODO) -->
@@ -94,6 +92,12 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
         </div>
       </div>
     </div>
+
+    <!-- Node Type Panel -->
+    <app-node-type-panel
+      [isOpen]="isNodeTypePanelOpen()"
+      (openChange)="isNodeTypePanelOpen.set($event)"
+    />
   `,
   styles: [
     `
@@ -111,8 +115,15 @@ export class RuntimePageComponent {
   // Inject state service (public for template access)
   readonly runtimeState = inject(RuntimeStateService);
 
+  // Panel state
+  isNodeTypePanelOpen = signal(false);
+
   constructor() {
     // Component initialization
     console.log('[RuntimePage] Initialized');
+  }
+
+  openNodeTypePanel(): void {
+    this.isNodeTypePanelOpen.set(true);
   }
 }
