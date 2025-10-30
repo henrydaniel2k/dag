@@ -15,26 +15,17 @@
 import { Component, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GraphCanvasComponent } from './components/graph-canvas.component';
+import { NavigationComponent } from './components/navigation.component';
 import { RuntimeStateService } from '../../core/services/runtime-state.service';
 
 @Component({
   selector: 'app-runtime-page',
   standalone: true,
-  imports: [CommonModule, GraphCanvasComponent],
+  imports: [CommonModule, GraphCanvasComponent, NavigationComponent],
   template: `
     <div class="flex h-screen bg-background">
-      <!-- Navigation Sidebar (TODO: Task 8) -->
-      <div class="w-64 border-r border-border bg-card">
-        <div class="p-4">
-          <h2 class="text-lg font-semibold">Navigation</h2>
-          <p class="text-sm text-muted-foreground">
-            MANTO: {{ runtimeState.selectedManto() }}
-          </p>
-          <p class="text-sm text-muted-foreground">
-            MSN: {{ runtimeState.selectedMsn() }}
-          </p>
-        </div>
-      </div>
+      <!-- Navigation Sidebar -->
+      <app-navigation></app-navigation>
 
       <!-- Main Content Area -->
       <div class="flex-1 flex flex-col">
