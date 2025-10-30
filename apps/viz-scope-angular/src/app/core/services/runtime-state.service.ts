@@ -434,6 +434,39 @@ export class RuntimeStateService {
   });
 
   /**
+   * Adjusted hop links (redirected through meta-nodes)
+   * When a hop link's source or target is folded into a meta-node,
+   * redirect the link to that meta-node instead
+   */
+  private readonly adjustedHopLinks = computed<Link[]>(() => {
+    const hops = this.hopLinks();
+    const metaNodes = this.metaNodes();
+
+    return hops.map((link) => {
+      let source = link.source;
+      let target = link.target;
+
+      // Check if source is in a meta-node
+      const sourceMetaNode = metaNodes.find((m) =>
+        m.nodeIds.includes(link.source)
+      );
+      if (sourceMetaNode) {
+        source = sourceMetaNode.id;
+      }
+
+      // Check if target is in a meta-node
+      const targetMetaNode = metaNodes.find((m) =>
+        m.nodeIds.includes(link.target)
+      );
+      if (targetMetaNode) {
+        target = targetMetaNode.id;
+      }
+
+      return { ...link, source, target };
+    });
+  });
+
+  /**
    * Direct links (between unfolded nodes)
    */
   readonly directLinks = computed<Link[]>(() => {
@@ -452,14 +485,14 @@ export class RuntimeStateService {
    */
   readonly allLinks = computed<Link[]>(() => {
     const direct = this.directLinks();
-    const hop = this.hopLinks();
+    const adjustedHops = this.adjustedHopLinks();
     const meta = this.metaLinks();
 
     // Merge and deduplicate
     return this.foldingService.mergeParallelConnectors([
       ...direct,
       ...meta,
-      ...hop,
+      ...adjustedHops,
     ]);
   });
 
