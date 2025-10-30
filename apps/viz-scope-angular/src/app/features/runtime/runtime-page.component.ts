@@ -24,6 +24,11 @@ import {
   ContextMenuState,
   ContextMenuAction,
 } from './components/node-context-menu.component';
+import { FoldSelectedButtonComponent } from './components/fold-selected-button.component';
+import { FloatingDockComponent } from './components/floating-dock.component';
+import { MetricSelectorComponent } from './components/metric-selector.component';
+import { ImmersiveToggleComponent } from './components/immersive-toggle.component';
+import { ViewMenuComponent } from './components/view-menu.component';
 import { RuntimeStateService } from '../../core/services/runtime-state.service';
 
 @Component({
@@ -37,6 +42,11 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
     NodeTypePanelComponent,
     NodeDataPanelComponent,
     NodeContextMenuComponent,
+    FoldSelectedButtonComponent,
+    FloatingDockComponent,
+    MetricSelectorComponent,
+    ImmersiveToggleComponent,
+    ViewMenuComponent,
   ],
   template: `
     <div class="flex h-screen bg-background">
@@ -45,21 +55,28 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
 
       <!-- Main Content Area -->
       <div class="flex-1 flex flex-col">
-        <!-- Top Toolbar (TODO: Task 8) -->
-        <div
-          class="flex items-center justify-between border-b border-border px-4 py-2"
-        >
-          <div class="flex items-center gap-4">
-            <span class="text-sm font-medium">{{
-              runtimeState.currentView()
-            }}</span>
-          </div>
-          <div class="flex items-center gap-2">
-            <span class="text-xs text-muted-foreground">
-              Metric: {{ runtimeState.overlayMetric()?.name || 'None' }}
-            </span>
+        <!-- Top Toolbar -->
+        <div class="flex items-center justify-between border-b border-border">
+          <div class="flex items-center">
+            <app-view-menu
+              [currentView]="runtimeState.currentView()"
+              (viewChange)="runtimeState.setCurrentView($event)"
+            />
+            <app-immersive-toggle
+              [immersiveMode]="runtimeState.immersiveMode()"
+              (toggle)="runtimeState.setImmersiveMode($event)"
+            />
           </div>
         </div>
+
+        <!-- Metric Selector (below toolbar) -->
+        <app-metric-selector
+          [selectedMetric]="runtimeState.overlayMetric()"
+          [selectedWindow]="runtimeState.timeWindow()"
+          [availableVariables]="runtimeState.availableVariables()"
+          (metricChange)="runtimeState.setOverlayMetric($event)"
+          (windowChange)="runtimeState.setTimeWindow($event)"
+        />
 
         <!-- Graph View -->
         <div
@@ -74,7 +91,18 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
 
             <!-- GraphCanvas -->
             <div class="flex-1 overflow-hidden relative">
-              <app-graph-canvas></app-graph-canvas>
+              <app-graph-canvas #graphCanvas></app-graph-canvas>
+
+              <!-- Floating Dock -->
+              <app-floating-dock
+                [diagram]="graphCanvas?.getDiagram() || null"
+              />
+
+              <!-- Fold Selected Button -->
+              <app-fold-selected-button
+                [selectedCount]="runtimeState.selectedNodeIds().size"
+                (foldSelected)="onFoldSelected()"
+              />
             </div>
           </div>
 
@@ -144,6 +172,13 @@ export class RuntimePageComponent {
 
   openNodeTypePanel(): void {
     this.isNodeTypePanelOpen.set(true);
+  }
+
+  onFoldSelected(): void {
+    const selectedIds = Array.from(this.runtimeState.selectedNodeIds());
+    if (selectedIds.length >= 2) {
+      this.runtimeState.foldNodes(selectedIds);
+    }
   }
 
   /**

@@ -3,12 +3,18 @@
  * Dropdown selectors for overlay metric and time window
  */
 
-import { Component, Input, Output, EventEmitter, computed } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  computed,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Variable, TimeWindow } from '../../../models';
-import { getAllowedWindows } from '../../../core/services/time-window.service';
+import { getAllowedWindows } from '../../../core/utils/time-window.utils';
 
 @Component({
   selector: 'app-metric-selector',
@@ -20,9 +26,9 @@ import { getAllowedWindows } from '../../../core/services/time-window.service';
     >
       <!-- Metric Selector -->
       <div class="flex items-center gap-2">
-        <label class="text-sm font-medium whitespace-nowrap">
+        <span class="text-sm font-medium whitespace-nowrap">
           Overlay Metric:
-        </label>
+        </span>
         <mat-form-field appearance="outline" class="metric-select">
           <mat-select
             [value]="selectedMetric?.id || 'none'"
@@ -40,9 +46,9 @@ import { getAllowedWindows } from '../../../core/services/time-window.service';
 
       <!-- Time Window Selector -->
       <div class="flex items-center gap-2">
-        <label class="text-sm font-medium whitespace-nowrap">
+        <span class="text-sm font-medium whitespace-nowrap">
           Time Window:
-        </label>
+        </span>
         <mat-form-field appearance="outline" class="window-select">
           <mat-select
             [value]="selectedWindow"

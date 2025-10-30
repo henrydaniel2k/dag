@@ -556,6 +556,42 @@ export class RuntimeStateService {
   private readonly hopsService = inject(HopsService);
   private readonly topologyService = inject(TopologyService);
 
+  // Available variables for metric overlay
+  readonly availableVariables = signal<Variable[]>([
+    {
+      id: 'power',
+      name: 'Power',
+      type: 'extensive',
+      unit: 'kW',
+      sit: 15,
+      isIntegrated: true,
+    },
+    {
+      id: 'temperature',
+      name: 'Temperature',
+      type: 'intensive',
+      unit: '°C',
+      sit: 5,
+      isIntegrated: true,
+    },
+    {
+      id: 'voltage',
+      name: 'Voltage',
+      type: 'intensive',
+      unit: 'V',
+      sit: 15,
+      isIntegrated: false,
+    },
+    {
+      id: 'current',
+      name: 'Current',
+      type: 'extensive',
+      unit: 'A',
+      sit: 15,
+      isIntegrated: false,
+    },
+  ]);
+
   constructor() {
     this.setupEffects();
   }
@@ -742,6 +778,10 @@ export class RuntimeStateService {
 
   toggleImmersiveMode(): void {
     this._immersiveMode.set(!this._immersiveMode());
+  }
+
+  setImmersiveMode(value: boolean): void {
+    this._immersiveMode.set(value);
   }
 
   setSelectedNode(nodeId: string | null): void {

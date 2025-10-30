@@ -48,7 +48,12 @@ export class GraphCanvasComponent implements OnInit, OnDestroy {
   @ViewChild('diagramContainer', { static: true })
   diagramContainer!: ElementRef<HTMLDivElement>;
 
-  private diagram: go.Diagram | null = null;
+  private _diagram: go.Diagram | null = null;
+
+  // Public diagram accessor for parent components
+  getDiagram(): go.Diagram | null {
+    return this._diagram;
+  }
 
   // Inject services
   private readonly runtimeState = inject(RuntimeStateService);
@@ -101,7 +106,7 @@ export class GraphCanvasComponent implements OnInit, OnDestroy {
       },
     };
 
-    this.diagram = this.gojsService.initializeDiagram(
+    this._diagram = this.gojsService.initializeDiagram(
       this.diagramContainer.nativeElement,
       callbacks
     );
@@ -136,12 +141,5 @@ export class GraphCanvasComponent implements OnInit, OnDestroy {
         selectedNodeIds,
       });
     });
-  }
-
-  /**
-   * Get diagram instance (for parent components)
-   */
-  getDiagram(): go.Diagram | null {
-    return this.diagram;
   }
 }
