@@ -43,8 +43,8 @@ export interface ContextMenuAction {
     <!-- Hidden trigger for programmatic menu -->
     <div
       [style.position]="'absolute'"
-      [style.left.px]="menuState()?.x || 0"
-      [style.top.px]="menuState()?.y || 0"
+      [style.left.px]="_menuState()?.x || 0"
+      [style.top.px]="_menuState()?.y || 0"
       [style.pointerEvents]="'none'"
     >
       <button
@@ -59,7 +59,7 @@ export interface ContextMenuAction {
 
     <!-- Context Menu -->
     <mat-menu #contextMenu="matMenu" class="context-menu-overlay">
-      @if (menuState(); as state) { @if (state.node; as node) {
+      @if (_menuState(); as state) { @if (state.node; as node) {
       <!-- Node Context Menu -->
       <button mat-menu-item (click)="onAction('open-data-panel', node.id)">
         <mat-icon>description</mat-icon>
@@ -137,7 +137,19 @@ export interface ContextMenuAction {
   ],
 })
 export class NodeContextMenuComponent {
-  @Input() menuState = signal<ContextMenuState | null>(null);
+  protected _menuState = signal<ContextMenuState | null>(null);
+
+  @Input({ required: true }) set menuState(state: ContextMenuState | null) {
+    const prevState = this._menuState();
+    this._menuState.set(state);
+    // Auto-open menu when state changes from null to non-null
+    if (state && !prevState) {
+      setTimeout(() => this.openMenu(), 10);
+    } else if (!state && prevState) {
+      setTimeout(() => this.menuTrigger?.closeMenu(), 10);
+    }
+  }
+
   @Input() allScopeNodes: Node[] = [];
   @Input() hiddenBranchRoots = new Set<string>();
   @Input() visibleIdsBeforeFold = new Set<string>();
@@ -149,7 +161,10 @@ export class NodeContextMenuComponent {
   menuTrigger!: MatMenuTrigger;
 
   // Computed values
-  readonly currentNode = computed(() => this.menuState()?.node || null);
+  readonly currentNode = computed(() => {
+    const state = this._menuState();
+    return state?.node || null;
+  });
 
   openMenu(): void {
     // Close existing menu first
@@ -165,7 +180,7 @@ export class NodeContextMenuComponent {
 
   closeMenu(): void {
     this.menuTrigger.closeMenu();
-    this.menuState.set(null);
+    this._menuState.set(null);
   }
 
   canShowFoldOption(node: Node): boolean {

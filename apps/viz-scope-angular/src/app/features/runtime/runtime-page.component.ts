@@ -21,7 +21,6 @@ import { NodeTypePanelComponent } from './components/node-type-panel.component';
 import { NodeDataPanelComponent } from './components/node-data-panel.component';
 import {
   NodeContextMenuComponent,
-  ContextMenuState,
   ContextMenuAction,
 } from './components/node-context-menu.component';
 import { FoldSelectedButtonComponent } from './components/fold-selected-button.component';
@@ -136,7 +135,7 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
     <!-- Context Menu -->
     <app-node-context-menu
       #contextMenu
-      [menuState]="contextMenuState"
+      [menuState]="runtimeState.contextMenuForComponent()"
       [allScopeNodes]="runtimeState.allScopeNodes()"
       [hiddenBranchRoots]="runtimeState.hiddenBranchRoots()"
       [visibleIdsBeforeFold]="runtimeState.visibleIdsBeforeFold()"
@@ -158,12 +157,11 @@ export class RuntimePageComponent {
   @ViewChild(GraphCanvasComponent) graphCanvas?: GraphCanvasComponent;
   @ViewChild('contextMenu') contextMenu?: NodeContextMenuComponent;
 
-  // Inject state service (public for template access)
+  // Inject services (public for template access)
   readonly runtimeState = inject(RuntimeStateService);
 
   // Panel state
   isNodeTypePanelOpen = signal(false);
-  contextMenuState = signal<ContextMenuState | null>(null);
 
   constructor() {
     // Component initialization
@@ -207,18 +205,6 @@ export class RuntimePageComponent {
     if (selectedIds.length >= 2) {
       this.runtimeState.foldNodes(selectedIds);
     }
-  }
-
-  /**
-   * Opens context menu at the given position
-   * Called from GraphCanvas on right-click
-   */
-  openContextMenu(state: ContextMenuState): void {
-    this.contextMenuState.set(state);
-    // Trigger menu to open
-    setTimeout(() => {
-      this.contextMenu?.openMenu();
-    }, 10);
   }
 
   /**

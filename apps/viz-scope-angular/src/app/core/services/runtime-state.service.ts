@@ -551,6 +551,24 @@ export class RuntimeStateService {
   readonly hiddenBranchRoots = this._hiddenBranchRoots.asReadonly();
   readonly contextMenuState = this._contextMenuState.asReadonly();
 
+  /**
+   * Context menu state formatted for NodeContextMenuComponent
+   */
+  readonly contextMenuForComponent = computed(() => {
+    const state = this._contextMenuState();
+    if (!state) return null;
+
+    const node = state.nodeId
+      ? this.topology().nodes.get(state.nodeId) || null
+      : null;
+
+    return {
+      x: state.x,
+      y: state.y,
+      node,
+    };
+  });
+
   private readonly scopeService = inject(ScopeService);
   private readonly foldingService = inject(FoldingService);
   private readonly hopsService = inject(HopsService);
