@@ -176,6 +176,7 @@ interface TypeCounts {
 export class NodeTypePanelComponent {
   @Input() isOpen = false;
   @Output() openChange = new EventEmitter<boolean>();
+  @Output() openNodeGroup = new EventEmitter<NodeType>();
 
   private readonly runtimeState = inject(RuntimeStateService);
   private readonly dialog = inject(MatDialog);
@@ -317,7 +318,7 @@ export class NodeTypePanelComponent {
 
   onOpenNodeGroup(type: NodeType): void {
     console.log('[NodeTypePanel] Open node group for type:', type);
-    // TODO: Open NodeGroupPanel
+    this.openNodeGroup.emit(type);
   }
 
   resetType(type: NodeType): void {

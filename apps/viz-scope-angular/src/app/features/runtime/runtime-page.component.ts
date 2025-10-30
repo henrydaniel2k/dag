@@ -12,12 +12,13 @@
  * - Floating controls (quick type controls, fold selected button, dock)
  */
 
-import { Component, ViewChild, inject, signal } from '@angular/core';
+import { Component, ViewChild, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GraphCanvasComponent } from './components/graph-canvas.component';
 import { NavigationComponent } from './components/navigation.component';
 import { QuickNodeTypeControlsComponent } from './components/quick-node-type-controls.component';
 import { NodeTypePanelComponent } from './components/node-type-panel.component';
+import { NodeGroupPanelComponent } from './components/node-group-panel.component';
 import { NodeDataPanelComponent } from './components/node-data-panel.component';
 import {
   NodeContextMenuComponent,
@@ -29,6 +30,7 @@ import { MetricSelectorComponent } from './components/metric-selector.component'
 import { ImmersiveToggleComponent } from './components/immersive-toggle.component';
 import { ViewMenuComponent } from './components/view-menu.component';
 import { RuntimeStateService } from '../../core/services/runtime-state.service';
+import { NodeType } from '../../models';
 
 @Component({
   selector: 'app-runtime-page',
@@ -39,6 +41,7 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
     NavigationComponent,
     QuickNodeTypeControlsComponent,
     NodeTypePanelComponent,
+    NodeGroupPanelComponent,
     NodeDataPanelComponent,
     NodeContextMenuComponent,
     FoldSelectedButtonComponent,
@@ -130,6 +133,22 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
     <app-node-type-panel
       [isOpen]="isNodeTypePanelOpen()"
       (openChange)="isNodeTypePanelOpen.set($event)"
+      (openNodeGroup)="openNodeGroupPanel($event)"
+    />
+
+    <!-- Node Group Panel -->
+    <app-node-group-panel
+      [isOpen]="isNodeGroupPanelOpen()"
+      [nodeType]="selectedGroupType()"
+      [nodes]="nodesOfSelectedType()"
+      [foldedNodeIds]="runtimeState.foldedNodeIds()"
+      [hiddenBranchRoots]="runtimeState.hiddenBranchRoots()"
+      [visibleIdsBeforeFold]="runtimeState.visibleIdsBeforeFold()"
+      (openChange)="isNodeGroupPanelOpen.set($event)"
+      (foldNodes)="onBulkFoldNodes($event)"
+      (unfoldNodes)="onBulkUnfoldNodes($event)"
+      (hideBranch)="onBulkHideBranch($event)"
+      (unhideBranch)="onBulkUnhideBranch($event)"
     />
 
     <!-- Context Menu -->
@@ -162,6 +181,19 @@ export class RuntimePageComponent {
 
   // Panel state
   isNodeTypePanelOpen = signal(false);
+  isNodeGroupPanelOpen = signal(false);
+  selectedGroupType = signal<NodeType | null>(null);
+
+  // Nodes of selected type for group panel
+  readonly nodesOfSelectedType = computed(() => {
+    const type = this.selectedGroupType();
+    if (!type) return [];
+
+    const topology = this.runtimeState.topology();
+    if (!topology) return [];
+
+    return Array.from(topology.nodes.values()).filter((n) => n.type === type);
+  });
 
   constructor() {
     // Component initialization
@@ -198,6 +230,21 @@ export class RuntimePageComponent {
 
   openNodeTypePanel(): void {
     this.isNodeTypePanelOpen.set(true);
+  }
+
+  openNodeGroupPanel(type: NodeType): void {
+    console.log('[RuntimePage] Opening node group panel for type:', type);
+
+    // Close NodeTypePanel first to avoid overlay
+    this.isNodeTypePanelOpen.set(false);
+
+    this.selectedGroupType.set(type);
+    this.isNodeGroupPanelOpen.set(true);
+    console.log('[RuntimePage] Panel state set:', {
+      isOpen: this.isNodeGroupPanelOpen(),
+      selectedType: this.selectedGroupType(),
+      nodesCount: this.nodesOfSelectedType().length,
+    });
   }
 
   onFoldSelected(): void {
@@ -254,5 +301,24 @@ export class RuntimePageComponent {
         }
         break;
     }
+  }
+
+  /**
+   * Bulk operations from Node Group Panel
+   */
+  onBulkFoldNodes(nodeIds: string[]): void {
+    this.runtimeState.foldNodes(nodeIds);
+  }
+
+  onBulkUnfoldNodes(nodeIds: string[]): void {
+    this.runtimeState.unfoldNodes(nodeIds);
+  }
+
+  onBulkHideBranch(nodeIds: string[]): void {
+    nodeIds.forEach((id) => this.runtimeState.hideBranch(id));
+  }
+
+  onBulkUnhideBranch(nodeIds: string[]): void {
+    nodeIds.forEach((id) => this.runtimeState.unhideBranch(id));
   }
 }
