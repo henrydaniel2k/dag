@@ -669,6 +669,7 @@ export class VisibilityChipComponent {
 5. **Use `input()`/`output()`** instead of `@Input`/`@Output` (Angular 17.1+)
 6. **Track by** in `@for` loops for performance
 7. **Use `update()`** for immutable state changes (Sets, Arrays)
+8. **`Use @if() @else() @else if()`** for condition statemenents
 
 ---
 
