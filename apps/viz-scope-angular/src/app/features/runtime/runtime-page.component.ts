@@ -14,12 +14,14 @@
 
 import { Component, ViewChild, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { GraphCanvasComponent } from './components/graph-canvas.component';
 import { NavigationComponent } from './components/navigation.component';
 import { QuickNodeTypeControlsComponent } from './components/quick-node-type-controls.component';
 import { NodeTypePanelComponent } from './components/node-type-panel.component';
 import { NodeGroupPanelComponent } from './components/node-group-panel.component';
 import { NodeDataPanelComponent } from './components/node-data-panel.component';
+import { BranchDataPanelComponent } from './components/branch-data-panel.component';
 import {
   NodeContextMenuComponent,
   ContextMenuAction,
@@ -29,6 +31,10 @@ import { FloatingDockComponent } from './components/floating-dock.component';
 import { MetricSelectorComponent } from './components/metric-selector.component';
 import { ImmersiveToggleComponent } from './components/immersive-toggle.component';
 import { ViewMenuComponent } from './components/view-menu.component';
+import {
+  PartialExpandDialogComponent,
+  PartialExpandDialogResult,
+} from './dialogs/partial-expand-dialog.component';
 import { RuntimeStateService } from '../../core/services/runtime-state.service';
 import { NodeType } from '../../models';
 
@@ -43,6 +49,7 @@ import { NodeType } from '../../models';
     NodeTypePanelComponent,
     NodeGroupPanelComponent,
     NodeDataPanelComponent,
+    BranchDataPanelComponent,
     NodeContextMenuComponent,
     FoldSelectedButtonComponent,
     FloatingDockComponent,
@@ -93,7 +100,10 @@ import { NodeType } from '../../models';
 
             <!-- GraphCanvas -->
             <div class="flex-1 overflow-hidden relative">
-              <app-graph-canvas #graphCanvas></app-graph-canvas>
+              <app-graph-canvas
+                #graphCanvas
+                (metaNodeClicked)="openPartialExpandDialog()"
+              ></app-graph-canvas>
 
               <!-- Floating Dock -->
               <app-floating-dock
@@ -111,6 +121,11 @@ import { NodeType } from '../../models';
           <!-- Node Data Panel -->
           @if (runtimeState.selectedNode()) {
           <app-node-data-panel />
+          } @else if (branchRootNode()) {
+          <app-branch-data-panel
+            [branchRootId]="branchRootNode()"
+            (panelClose)="branchRootNode.set(null)"
+          />
           }
         </div>
 
@@ -158,7 +173,6 @@ import { NodeType } from '../../models';
       [allScopeNodes]="runtimeState.allScopeNodes()"
       [hiddenBranchRoots]="runtimeState.hiddenBranchRoots()"
       [visibleIdsBeforeFold]="runtimeState.visibleIdsBeforeFold()"
-      [canOpenBranch]="false"
       (action)="onContextMenuAction($event)"
     />
   `,
@@ -178,11 +192,13 @@ export class RuntimePageComponent {
 
   // Inject services (public for template access)
   readonly runtimeState = inject(RuntimeStateService);
+  private readonly dialog = inject(MatDialog);
 
   // Panel state
   isNodeTypePanelOpen = signal(false);
   isNodeGroupPanelOpen = signal(false);
   selectedGroupType = signal<NodeType | null>(null);
+  branchRootNode = signal<string | null>(null);
 
   // Nodes of selected type for group panel
   readonly nodesOfSelectedType = computed(() => {
@@ -281,8 +297,11 @@ export class RuntimePageComponent {
         break;
 
       case 'open-branch-panel':
-        // TODO: Implement branch panel
-        console.log('[RuntimePage] Open branch panel:', action.nodeId);
+        if (action.nodeId) {
+          // Close selected node panel and open branch panel instead
+          this.runtimeState.setSelectedNode(null);
+          this.branchRootNode.set(action.nodeId);
+        }
         break;
 
       case 'open-node-type-panel':
@@ -320,5 +339,41 @@ export class RuntimePageComponent {
 
   onBulkUnhideBranch(nodeIds: string[]): void {
     nodeIds.forEach((id) => this.runtimeState.unhideBranch(id));
+  }
+
+  /**
+   * Opens the partial expand dialog for a meta-node
+   * Called when user clicks on a meta-node in the graph
+   */
+  openPartialExpandDialog(): void {
+    const metaNode = this.runtimeState.expandDialogMetaNode();
+    if (!metaNode) return;
+
+    const topology = this.runtimeState.topology();
+    if (!topology) return;
+
+    const dialogRef = this.dialog.open<
+      PartialExpandDialogComponent,
+      unknown,
+      PartialExpandDialogResult
+    >(PartialExpandDialogComponent, {
+      data: {
+        metaNode,
+        getNodeName: (nodeId: string) => {
+          const node = topology.nodes.get(nodeId);
+          return node ? node.name : nodeId;
+        },
+      },
+      width: '500px',
+      maxHeight: '80vh',
+    });
+
+    dialogRef
+      .afterClosed()
+      .subscribe((result: PartialExpandDialogResult | undefined) => {
+        if (result && result.nodeIds.length > 0) {
+          this.runtimeState.unfoldNodes(result.nodeIds);
+        }
+      });
   }
 }

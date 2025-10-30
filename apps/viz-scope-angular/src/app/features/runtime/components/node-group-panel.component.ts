@@ -37,26 +37,25 @@ type FilterType = 'all' | 'eligible' | 'hidden';
     MatChipsModule,
   ],
   template: `
-    <!-- Backdrop -->
+    <!-- Backdrop - very subtle, doesn't obscure content -->
     @if (_isOpen()) {
     <div
       role="button"
       tabindex="0"
-      class="fixed inset-0 bg-black/30 z-[55]"
+      class="position-fixed top-0 start-0 w-100 h-100 bg-black opacity-10 z-40"
       (click)="closePanel()"
       (keydown.escape)="closePanel()"
       aria-label="Close panel"
+      style="inset: 0"
     ></div>
     }
-    <!-- Side Panel -->
+    <!-- Side Panel - on top of backdrop -->
     <div [class]="getPanelClass()">
-      <div class="flex flex-col h-full bg-white dark:bg-gray-900 shadow-xl">
+      <div class="d-flex flex-column h-100 bg-white shadow">
         <!-- Header -->
-        <div class="p-6 border-b border-gray-200 dark:border-gray-800">
-          <div class="flex items-center justify-between mb-2">
-            <h2
-              class="text-xl font-semibold text-gray-900 dark:text-white flex items-center gap-2"
-            >
+        <div class="p-4 border-bottom">
+          <div class="d-flex align-items-center justify-content-between mb-2">
+            <h2 class="h5 fw-semibold mb-0 d-flex align-items-center gap-2">
               <!-- Node Type Icon SVG -->
               <svg
                 width="20"
@@ -67,7 +66,7 @@ type FilterType = 'all' | 'eligible' | 'hidden';
                 stroke-width="1.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="text-blue-600"
+                class="text-primary"
               >
                 <path d="M3 3h10v10H3V3z" />
               </svg>
@@ -81,7 +80,7 @@ type FilterType = 'all' | 'eligible' | 'hidden';
               <mat-icon>close</mat-icon>
             </button>
           </div>
-          <p class="text-sm text-gray-600 dark:text-gray-400">
+          <p class="small text-muted mb-0">
             {{ _nodes().length }}
             {{ _nodes().length === 1 ? 'node' : 'nodes' }}
             @if (hiddenCount() > 0) {
@@ -94,10 +93,10 @@ type FilterType = 'all' | 'eligible' | 'hidden';
         </div>
 
         <!-- Content -->
-        <div class="flex-1 overflow-hidden flex flex-col p-6">
+        <div class="flex-fill overflow-hidden d-flex flex-column p-4">
           <!-- Bulk Actions -->
-          <div class="space-y-2 mb-4">
-            <div class="flex items-center justify-between">
+          <div class="space-y-2 mb-3">
+            <div class="d-flex align-items-center justify-content-between">
               <button
                 mat-stroked-button
                 (click)="handleSelectAll()"
@@ -392,11 +391,8 @@ export class NodeGroupPanelComponent {
   }
 
   getPanelClass(): string {
-    const baseClasses =
-      'fixed top-0 right-0 h-full w-[400px] sm:w-[540px] z-50 transition-transform duration-300 ease-in-out';
-    const visibilityClasses = this._isOpen()
-      ? 'translate-x-0'
-      : 'translate-x-full';
+    const baseClasses = 'position-fixed top-0 end-0 h-100 slide-panel z-60';
+    const visibilityClasses = this._isOpen() ? 'show' : '';
 
     return `${baseClasses} ${visibilityClasses}`;
   }

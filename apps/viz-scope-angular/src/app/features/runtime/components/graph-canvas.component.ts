@@ -15,6 +15,7 @@ import {
   OnDestroy,
   effect,
   inject,
+  output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import * as go from 'gojs';
@@ -50,6 +51,9 @@ export class GraphCanvasComponent implements OnInit, OnDestroy {
 
   private _diagram: go.Diagram | null = null;
 
+  // Output events
+  metaNodeClicked = output<void>();
+
   // Public diagram accessor for parent components
   getDiagram(): go.Diagram | null {
     return this._diagram;
@@ -83,6 +87,7 @@ export class GraphCanvasComponent implements OnInit, OnDestroy {
       },
       onMetaNodeClick: (metaNode) => {
         this.runtimeState.setExpandDialogMetaNode(metaNode);
+        this.metaNodeClicked.emit();
       },
       onContextMenu: (data) => {
         this.runtimeState.setContextMenuState({

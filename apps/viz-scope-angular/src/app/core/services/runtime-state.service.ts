@@ -566,6 +566,7 @@ export class RuntimeStateService {
       x: state.x,
       y: state.y,
       node,
+      canOpenBranch: state.canOpenBranch,
     };
   });
 

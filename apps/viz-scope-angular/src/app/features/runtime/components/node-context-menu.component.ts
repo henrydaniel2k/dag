@@ -21,6 +21,7 @@ export interface ContextMenuState {
   x: number;
   y: number;
   node: Node | null;
+  canOpenBranch?: boolean;
 }
 
 export interface ContextMenuAction {
@@ -220,7 +221,8 @@ export class NodeContextMenuComponent {
   }
 
   canOpenBranchPanel(): boolean {
-    return this.canOpenBranch;
+    const state = this._menuState();
+    return state?.canOpenBranch ?? false;
   }
 
   onAction(type: ContextMenuAction['type'], nodeId?: string): void {
