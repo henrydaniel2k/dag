@@ -10,3 +10,4 @@ export * from './theme.service';
 export * from './topology.service';
 export * from './node-icon.service';
 export * from './gojs.service';
+export * from './runtime-state.service';
