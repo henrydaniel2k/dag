@@ -36,21 +36,21 @@ import { NodeType } from '../../../models';
       <div class="flex items-center gap-1 ml-1">
         @if (isLocked) {
         <span
-          class="inline-flex items-center h-4 px-1.5 text-[10px] border rounded border-orange-500 text-orange-500"
+          class="inline-flex items-center h-4 px-1.5 text-[10px] border rounded border-[var(--badge-lock)] text-[var(--badge-lock)]"
           aria-label="MSN type cannot be hidden"
         >
           🔒
         </span>
         } @if (isAutoFolded && !isLocked) {
         <span
-          class="inline-flex items-center h-4 px-1.5 text-[10px] border rounded border-blue-500 text-blue-500"
+          class="inline-flex items-center h-4 px-1.5 text-[10px] border rounded border-[var(--badge-auto)] text-[var(--badge-auto)]"
           aria-label="Auto-folded"
         >
           AUTO
         </span>
         } @if (isPartialFolded && !isLocked) {
         <span
-          class="inline-flex items-center h-4 px-1.5 text-[10px] border rounded border-yellow-500 text-yellow-500"
+          class="inline-flex items-center h-4 px-1.5 text-[10px] border rounded border-[var(--badge-partial)] text-[var(--badge-partial)]"
           aria-label="Partially folded"
         >
           PARTIAL
@@ -87,19 +87,15 @@ export class QuickNodeTypeChipComponent {
   get chipClasses(): string {
     const baseClasses = [
       'flex items-center gap-1.5 px-2 py-1 h-8 rounded-md border text-sm transition-all',
-      'focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2',
+      'focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
     ];
 
     if (this.isVisible) {
       baseClasses.push(
-        'bg-blue-50 dark:bg-blue-950 border-blue-300 dark:border-blue-700',
-        'text-blue-900 dark:text-blue-100'
+        'bg-[var(--chip-visible-bg)] border-[var(--chip-visible-border)] text-[var(--chip-visible-text)]',
       );
     } else {
-      baseClasses.push(
-        'bg-transparent border-gray-300 dark:border-gray-700',
-        'text-gray-500 dark:text-gray-400 opacity-60'
-      );
+      baseClasses.push('bg-transparent border-border text-muted-foreground opacity-60');
     }
 
     if (this.isLocked) {

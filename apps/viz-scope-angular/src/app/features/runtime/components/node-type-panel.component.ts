@@ -42,8 +42,8 @@ interface TypeCounts {
     FoldStateSegmentedControlComponent,
   ],
   template: `
-    <div
-      *ngIf="isOpen"
+    @if (isOpen) {
+      <div
       class="fixed inset-y-0 right-0 w-[420px] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 shadow-2xl flex flex-col z-50"
     >
       <!-- Header -->
@@ -153,6 +153,7 @@ interface TypeCounts {
         </button>
       </div>
     </div>
+    }
 
     <!-- Backdrop -->
     <div
