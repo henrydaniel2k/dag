@@ -16,12 +16,18 @@ import { Component, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GraphCanvasComponent } from './components/graph-canvas.component';
 import { NavigationComponent } from './components/navigation.component';
+import { QuickNodeTypeControlsComponent } from './components/quick-node-type-controls.component';
 import { RuntimeStateService } from '../../core/services/runtime-state.service';
 
 @Component({
   selector: 'app-runtime-page',
   standalone: true,
-  imports: [CommonModule, GraphCanvasComponent, NavigationComponent],
+  imports: [
+    CommonModule,
+    GraphCanvasComponent,
+    NavigationComponent,
+    QuickNodeTypeControlsComponent,
+  ],
   template: `
     <div class="flex h-screen bg-background">
       <!-- Navigation Sidebar -->
@@ -50,15 +56,9 @@ import { RuntimeStateService } from '../../core/services/runtime-state.service';
           class="flex-1 flex overflow-hidden"
           *ngIf="runtimeState.currentView() === 'Graph View'"
         >
-          <!-- Quick Controls (TODO: Task 8) -->
+          <!-- Quick Controls -->
           <div class="flex-1 flex flex-col">
-            <div class="border-b border-border px-4 py-2 bg-card">
-              <p class="text-xs text-muted-foreground">
-                Types: {{ runtimeState.scopeTypes().length }} | Visible:
-                {{ runtimeState.unfoldedNodes().length }} nodes | Folded:
-                {{ runtimeState.foldedNodeIds().size }} nodes
-              </p>
-            </div>
+            <app-quick-node-type-controls></app-quick-node-type-controls>
 
             <!-- GraphCanvas -->
             <div class="flex-1 overflow-hidden relative">
