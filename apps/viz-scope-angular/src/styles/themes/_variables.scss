@@ -1,0 +1,34 @@
+/**
+ * Global variables and mixins
+ */
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+
+// Border radius
+$radius-sm: 2px;
+$radius-md: 4px;
+$radius-lg: 8px;
+
+// Z-index layers
+$z-dropdown: 1050;
+$z-modal: 1060;
+$z-tooltip: 1070;
+$z-notification: 1080;
+
+// Breakpoints
+$breakpoint-xs: 480px;
+$breakpoint-sm: 576px;
+$breakpoint-md: 768px;
+$breakpoint-lg: 992px;
+$breakpoint-xl: 1200px;
+$breakpoint-xxl: 1600px;
+
+// Transitions
+$transition-fast: 0.15s ease-in-out;
+$transition-base: 0.3s ease-in-out;
+$transition-slow: 0.5s ease-in-out;

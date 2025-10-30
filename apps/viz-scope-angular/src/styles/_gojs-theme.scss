@@ -1,0 +1,63 @@
+/**
+ * GoJS Theme Integration
+ * CSS custom properties that bridge ng-zorro theme to GoJS rendering
+ */
+
+:root {
+  // Node styling (light mode defaults)
+  --gojs-node-fill: 241 245 249;
+  --gojs-node-stroke: 148 163 184;
+  --gojs-node-text: 15 23 42;
+  --gojs-node-selected-stroke: 59 130 246;
+  --gojs-node-hover-fill: 226 232 240;
+  
+  // Meta-node styling
+  --gojs-meta-node-fill: 219 234 254;
+  --gojs-meta-node-stroke: 96 165 250;
+  --gojs-meta-node-badge: 59 130 246;
+  
+  // Link styling
+  --gojs-link-stroke: 148 163 184;
+  --gojs-link-hop-stroke: 156 163 175;
+  --gojs-link-hover-stroke: 100 116 139;
+  
+  // MSN (Main Scope Node) styling
+  --gojs-msn-stroke: 34 197 94;
+  --gojs-msn-fill: 220 252 231;
+  
+  // Background
+  --gojs-background: 255 255 255;
+  --gojs-grid: 241 245 249;
+}
+
+.dark {
+  // Node styling (dark mode)
+  --gojs-node-fill: 30 41 59;
+  --gojs-node-stroke: 71 85 105;
+  --gojs-node-text: 248 250 252;
+  --gojs-node-selected-stroke: 96 165 250;
+  --gojs-node-hover-fill: 51 65 85;
+  
+  // Meta-node styling
+  --gojs-meta-node-fill: 30 58 138;
+  --gojs-meta-node-stroke: 59 130 246;
+  --gojs-meta-node-badge: 96 165 250;
+  
+  // Link styling
+  --gojs-link-stroke: 71 85 105;
+  --gojs-link-hop-stroke: 82 82 91;
+  --gojs-link-hover-stroke: 100 116 139;
+  
+  // MSN styling
+  --gojs-msn-stroke: 34 197 94;
+  --gojs-msn-fill: 20 83 45;
+  
+  // Background
+  --gojs-background: 15 23 42;
+  --gojs-grid: 30 41 59;
+}
+
+// Helper function to convert HSL to CSS color
+@function gojs-color($hsl-var) {
+  @return hsl(var(--gojs-#{$hsl-var}));
+}

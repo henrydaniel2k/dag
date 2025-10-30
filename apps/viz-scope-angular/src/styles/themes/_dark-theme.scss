@@ -1,0 +1,29 @@
+/**
+ * CSS Variables for ng-zorro theme customization
+ * Dark theme variables
+ */
+
+// Primary colors
+$dark-primary-color: #177ddc;
+$dark-primary-hover: #3c9ae8;
+$dark-primary-active: #095cb5;
+
+// Background colors
+$dark-background: #141414;
+$dark-background-secondary: #1f1f1f;
+$dark-background-tertiary: #252525;
+
+// Text colors
+$dark-text-primary: rgba(255, 255, 255, 0.85);
+$dark-text-secondary: rgba(255, 255, 255, 0.65);
+$dark-text-disabled: rgba(255, 255, 255, 0.25);
+
+// Border colors
+$dark-border-base: #434343;
+$dark-border-light: #303030;
+
+// Component-specific
+$dark-link-color: #177ddc;
+$dark-success-color: #49aa19;
+$dark-warning-color: #d89614;
+$dark-error-color: #d32029;

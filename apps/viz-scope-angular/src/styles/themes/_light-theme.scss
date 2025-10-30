@@ -1,0 +1,29 @@
+/**
+ * CSS Variables for ng-zorro theme customization
+ * Light theme variables
+ */
+
+// Primary colors
+$light-primary-color: #1890ff;
+$light-primary-hover: #40a9ff;
+$light-primary-active: #096dd9;
+
+// Background colors
+$light-background: #ffffff;
+$light-background-secondary: #fafafa;
+$light-background-tertiary: #f5f5f5;
+
+// Text colors
+$light-text-primary: rgba(0, 0, 0, 0.85);
+$light-text-secondary: rgba(0, 0, 0, 0.65);
+$light-text-disabled: rgba(0, 0, 0, 0.25);
+
+// Border colors
+$light-border-base: #d9d9d9;
+$light-border-light: #f0f0f0;
+
+// Component-specific
+$light-link-color: #1890ff;
+$light-success-color: #52c41a;
+$light-warning-color: #faad14;
+$light-error-color: #f5222d;
