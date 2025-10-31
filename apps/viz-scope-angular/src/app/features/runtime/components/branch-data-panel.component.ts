@@ -36,7 +36,7 @@ interface ConsolidatedMetric {
     getBranchData(rootNode!);
 
     <div
-      class="w-96 border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col h-full"
+      class="w-[420px] border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col h-full"
     >
       <!-- Header -->
       <div

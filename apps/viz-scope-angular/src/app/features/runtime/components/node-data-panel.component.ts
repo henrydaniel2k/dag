@@ -43,7 +43,7 @@ interface MetricDisplay {
   template: `
     @if (selectedNode()) { @let node = selectedNode();
     <div
-      class="w-96 border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col h-full p-2"
+      class="w-[420px] border-l border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex flex-col h-full p-2"
     >
       <!-- Header -->
       <div

@@ -251,9 +251,6 @@ export class RuntimePageComponent {
   openNodeGroupPanel(type: NodeType): void {
     console.log('[RuntimePage] Opening node group panel for type:', type);
 
-    // Close NodeTypePanel first to avoid overlay
-    this.isNodeTypePanelOpen.set(false);
-
     this.selectedGroupType.set(type);
     this.isNodeGroupPanelOpen.set(true);
     console.log('[RuntimePage] Panel state set:', {
