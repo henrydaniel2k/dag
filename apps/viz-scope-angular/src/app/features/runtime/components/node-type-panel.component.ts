@@ -43,7 +43,7 @@ interface TypeCounts {
   ],
   template: `
     @if (isOpen) {
-      <div
+    <div
       class="fixed inset-y-0 right-0 w-[420px] bg-white dark:bg-gray-900 border-l border-gray-200 dark:border-gray-800 shadow-2xl flex flex-col z-50"
     >
       <!-- Header -->
@@ -274,16 +274,13 @@ export class NodeTypePanelComponent {
     const topology = this.runtimeState.topology();
     if (!topology) return;
 
-    // Get all unfolded nodes of this type
+    // Get all visible unfolded nodes of this type
+    const visibleNodes = this.runtimeState.visibleNodes();
     const foldedSet = new Set(this.runtimeState.foldedNodeIds());
-    const nodes: Node[] = [];
 
-    for (const nodeId of topology.nodes.keys()) {
-      const node = topology.nodes.get(nodeId) as Node | undefined;
-      if (node && node.type === type && !foldedSet.has(nodeId)) {
-        nodes.push(node);
-      }
-    }
+    const nodes: Node[] = visibleNodes.filter(
+      (node) => node.type === type && !foldedSet.has(node.id)
+    );
 
     if (nodes.length === 0) return;
 
