@@ -14,12 +14,17 @@ import {
   effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatChipsModule } from '@angular/material/chips';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faTimes,
+  faChevronDown,
+  faChevronUp,
+  faEyeSlash,
+  faEye,
+  faFilter,
+} from '@fortawesome/free-solid-svg-icons';
 import { Node, NodeType } from '../../../models';
 
 type FilterType = 'all' | 'eligible' | 'hidden';
@@ -29,12 +34,9 @@ type FilterType = 'all' | 'eligible' | 'hidden';
   standalone: true,
   imports: [
     CommonModule,
-    MatSidenavModule,
-    MatButtonModule,
-    MatIconModule,
     MatCheckboxModule,
     MatTooltipModule,
-    MatChipsModule,
+    FontAwesomeModule,
   ],
   template: `
     <!-- Backdrop - very subtle, doesn't obscure content -->
@@ -42,20 +44,23 @@ type FilterType = 'all' | 'eligible' | 'hidden';
     <div
       role="button"
       tabindex="0"
-      class="position-fixed top-0 start-0 w-100 h-100 bg-black opacity-10 z-40"
+      class="fixed inset-0 bg-black/10 dark:bg-black/20 z-40"
       (click)="closePanel()"
       (keydown.escape)="closePanel()"
       aria-label="Close panel"
-      style="inset: 0"
     ></div>
     }
     <!-- Side Panel - on top of backdrop -->
     <div [class]="getPanelClass()">
-      <div class="d-flex flex-column h-100 bg-white shadow">
+      <div
+        class="flex flex-col h-full bg-white dark:bg-gray-900 shadow-xl border-l border-gray-200 dark:border-gray-700"
+      >
         <!-- Header -->
-        <div class="p-4 border-bottom">
-          <div class="d-flex align-items-center justify-content-between mb-2">
-            <h2 class="h5 fw-semibold mb-0 d-flex align-items-center gap-2">
+        <div class="p-4 border-b border-gray-200 dark:border-gray-700">
+          <div class="flex items-center justify-between mb-2">
+            <h2
+              class="text-lg font-semibold mb-0 flex items-center gap-2 text-gray-900 dark:text-white"
+            >
               <!-- Node Type Icon SVG -->
               <svg
                 width="20"
@@ -66,21 +71,24 @@ type FilterType = 'all' | 'eligible' | 'hidden';
                 stroke-width="1.5"
                 stroke-linecap="round"
                 stroke-linejoin="round"
-                class="text-primary"
+                class="text-blue-600 dark:text-blue-400"
               >
                 <path d="M3 3h10v10H3V3z" />
               </svg>
               {{ _nodeType() }} Nodes
             </h2>
             <button
-              mat-icon-button
               (click)="closePanel()"
               aria-label="Close panel"
+              class="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
             >
-              <mat-icon>close</mat-icon>
+              <fa-icon
+                [icon]="faTimes"
+                class="text-gray-600 dark:text-gray-400"
+              />
             </button>
           </div>
-          <p class="small text-muted mb-0">
+          <p class="text-sm text-gray-600 dark:text-gray-400 mb-0">
             {{ _nodes().length }}
             {{ _nodes().length === 1 ? 'node' : 'nodes' }}
             @if (hiddenCount() > 0) {
@@ -93,14 +101,13 @@ type FilterType = 'all' | 'eligible' | 'hidden';
         </div>
 
         <!-- Content -->
-        <div class="flex-fill overflow-hidden d-flex flex-column p-4">
+        <div class="flex-1 overflow-hidden flex flex-col p-4">
           <!-- Bulk Actions -->
           <div class="space-y-2 mb-3">
-            <div class="d-flex align-items-center justify-content-between">
+            <div class="flex items-center justify-between">
               <button
-                mat-stroked-button
                 (click)="handleSelectAll()"
-                class="!text-xs"
+                class="px-3 py-1.5 text-xs border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 {{
                   selectedNodeIds().size === _nodes().length
@@ -117,49 +124,37 @@ type FilterType = 'all' | 'eligible' | 'hidden';
             <div class="flex flex-col gap-2">
               <div class="flex items-center gap-2">
                 <button
-                  mat-stroked-button
                   (click)="handleFoldSelected()"
-                  class="flex-1 !h-8 !text-xs"
+                  class="flex-1 h-8 text-xs px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center gap-1"
                 >
-                  <mat-icon class="!w-3 !h-3 !text-xs mr-1"
-                    >unfold_less</mat-icon
-                  >
+                  <fa-icon [icon]="faChevronUp" class="text-xs" />
                   Fold
                 </button>
                 <button
-                  mat-stroked-button
                   (click)="handleUnfoldSelected()"
-                  class="flex-1 !h-8 !text-xs"
+                  class="flex-1 h-8 text-xs px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center gap-1"
                 >
-                  <mat-icon class="!w-3 !h-3 !text-xs mr-1"
-                    >unfold_more</mat-icon
-                  >
+                  <fa-icon [icon]="faChevronDown" class="text-xs" />
                   Unfold
                 </button>
               </div>
               <div class="flex items-center gap-2">
                 @if (currentFilter() !== 'hidden') {
                 <button
-                  mat-stroked-button
                   (click)="handleHideBranchSelected()"
                   [disabled]="!canHideSelected()"
                   [matTooltip]="hideTooltip()"
-                  class="flex-1 !h-8 !text-xs"
+                  class="flex-1 h-8 text-xs px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <mat-icon class="!w-3 !h-3 !text-xs mr-1"
-                    >visibility_off</mat-icon
-                  >
+                  <fa-icon [icon]="faEyeSlash" class="text-xs" />
                   Hide Branch
                 </button>
                 } @if (canUnhideSelected()) {
                 <button
-                  mat-stroked-button
                   (click)="handleUnhideBranchSelected()"
-                  class="flex-1 !h-8 !text-xs"
+                  class="flex-1 h-8 text-xs px-3 border border-gray-300 dark:border-gray-600 rounded hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors flex items-center justify-center gap-1"
                 >
-                  <mat-icon class="!w-3 !h-3 !text-xs mr-1"
-                    >visibility</mat-icon
-                  >
+                  <fa-icon [icon]="faEye" class="text-xs" />
                   Unhide Branch
                 </button>
                 }
@@ -172,35 +167,41 @@ type FilterType = 'all' | 'eligible' | 'hidden';
 
           <!-- Filter Pills -->
           <div class="flex items-center gap-2 mb-4">
-            <mat-icon
-              class="!w-4 !h-4 !text-base text-gray-600 dark:text-gray-400"
-              >filter_list</mat-icon
-            >
+            <fa-icon
+              [icon]="faFilter"
+              class="text-sm text-gray-600 dark:text-gray-400"
+            />
             <div class="flex items-center gap-1">
               <button
-                mat-button
-                [class.mat-primary]="currentFilter() === 'all'"
-                [class.mat-stroked-button]="currentFilter() !== 'all'"
                 (click)="setFilter('all')"
-                class="!h-7 !text-xs !px-3"
+                [class]="
+                  currentFilter() === 'all'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                "
+                class="h-7 text-xs px-3 rounded hover:opacity-80 transition-opacity"
               >
                 All
               </button>
               <button
-                mat-button
-                [class.mat-primary]="currentFilter() === 'eligible'"
-                [class.mat-stroked-button]="currentFilter() !== 'eligible'"
                 (click)="setFilter('eligible')"
-                class="!h-7 !text-xs !px-3"
+                [class]="
+                  currentFilter() === 'eligible'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                "
+                class="h-7 text-xs px-3 rounded hover:opacity-80 transition-opacity"
               >
                 Eligible ({{ eligibleCount() }})
               </button>
               <button
-                mat-button
-                [class.mat-primary]="currentFilter() === 'hidden'"
-                [class.mat-stroked-button]="currentFilter() !== 'hidden'"
                 (click)="setFilter('hidden')"
-                class="!h-7 !text-xs !px-3"
+                [class]="
+                  currentFilter() === 'hidden'
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300'
+                "
+                class="h-7 text-xs px-3 rounded hover:opacity-80 transition-opacity"
               >
                 Hidden ({{ hiddenCount() }})
               </button>
@@ -217,17 +218,25 @@ type FilterType = 'all' | 'eligible' | 'hidden';
               />
               <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 flex-wrap">
-                  <span class="text-sm font-medium truncate">{{
-                    node.name
-                  }}</span>
+                  <span
+                    class="text-sm font-medium truncate text-gray-900 dark:text-white"
+                    >{{ node.name }}</span
+                  >
                   @if (_hiddenBranchRoots().has(node.id)) {
-                  <mat-chip class="!text-xs !h-5 !px-2">Hidden branch</mat-chip>
+                  <span
+                    class="text-xs h-5 px-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 flex items-center"
+                    >Hidden branch</span
+                  >
                   } @if (_foldedNodeIds().has(node.id)) {
-                  <mat-chip class="!text-xs !h-5 !px-2" color="accent"
-                    >Folded</mat-chip
+                  <span
+                    class="text-xs h-5 px-2 rounded-full bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300 flex items-center"
+                    >Folded</span
                   >
                   } @if (!_hiddenBranchRoots().has(node.id)) {
-                  <mat-chip class="!text-xs !h-5 !px-2">Visible</mat-chip>
+                  <span
+                    class="text-xs h-5 px-2 rounded-full bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-300 flex items-center"
+                    >Visible</span
+                  >
                   }
                 </div>
                 <div
@@ -290,6 +299,14 @@ export class NodeGroupPanelComponent {
   @Output() unfoldNodes = new EventEmitter<string[]>();
   @Output() hideBranch = new EventEmitter<string[]>();
   @Output() unhideBranch = new EventEmitter<string[]>();
+
+  // FontAwesome icons
+  readonly faTimes = faTimes;
+  readonly faChevronDown = faChevronDown;
+  readonly faChevronUp = faChevronUp;
+  readonly faEyeSlash = faEyeSlash;
+  readonly faEye = faEye;
+  readonly faFilter = faFilter;
 
   // Local state
   readonly selectedNodeIds = signal<Set<string>>(new Set());
@@ -391,8 +408,11 @@ export class NodeGroupPanelComponent {
   }
 
   getPanelClass(): string {
-    const baseClasses = 'position-fixed top-0 end-0 h-100 slide-panel z-60';
-    const visibilityClasses = this._isOpen() ? 'show' : '';
+    const baseClasses =
+      'fixed top-0 right-0 h-full w-96 transition-transform duration-300 ease-in-out z-50';
+    const visibilityClasses = this._isOpen()
+      ? 'translate-x-0'
+      : 'translate-x-full';
 
     return `${baseClasses} ${visibilityClasses}`;
   }
