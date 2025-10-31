@@ -13,8 +13,14 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faHand,
+  faArrowPointer,
+  faRotateLeft,
+  faRotateRight,
+} from '@fortawesome/free-solid-svg-icons';
 import * as go from 'gojs';
 
 export type ToolMode = 'pan' | 'select';
@@ -22,7 +28,7 @@ export type ToolMode = 'pan' | 'select';
 @Component({
   selector: 'app-floating-dock',
   standalone: true,
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatButtonModule, FontAwesomeModule, MatTooltipModule],
   template: `
     <div class="floating-dock">
       <!-- Pan button -->
@@ -34,7 +40,7 @@ export type ToolMode = 'pan' | 'select';
         matTooltip="Pan (Hand tool)"
         aria-label="Pan tool"
       >
-        <mat-icon>pan_tool</mat-icon>
+        <fa-icon [icon]="faHand" />
       </button>
 
       <!-- Select button -->
@@ -46,7 +52,7 @@ export type ToolMode = 'pan' | 'select';
         matTooltip="Select"
         aria-label="Select tool"
       >
-        <mat-icon>mouse</mat-icon>
+        <fa-icon [icon]="faArrowPointer" />
       </button>
 
       <!-- Separator -->
@@ -60,7 +66,7 @@ export type ToolMode = 'pan' | 'select';
         matTooltip="Undo"
         aria-label="Undo"
       >
-        <mat-icon>undo</mat-icon>
+        <fa-icon [icon]="faRotateLeft" />
       </button>
 
       <!-- Redo button -->
@@ -71,7 +77,7 @@ export type ToolMode = 'pan' | 'select';
         matTooltip="Redo"
         aria-label="Redo"
       >
-        <mat-icon>redo</mat-icon>
+        <fa-icon [icon]="faRotateRight" />
       </button>
     </div>
   `,
@@ -93,8 +99,7 @@ export type ToolMode = 'pan' | 'select';
 
         background: rgba(255, 255, 255, 0.95);
         border: 1px solid rgba(0, 0, 0, 0.1);
-        box-shadow:
-          0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
           0 10px 15px -3px rgba(0, 0, 0, 0.1);
         backdrop-filter: blur(8px);
       }
@@ -109,10 +114,8 @@ export type ToolMode = 'pan' | 'select';
         height: 36px;
         transition: all 150ms ease;
 
-        mat-icon {
+        fa-icon {
           font-size: 18px;
-          width: 18px;
-          height: 18px;
         }
 
         &.active {
@@ -156,6 +159,12 @@ export type ToolMode = 'pan' | 'select';
 })
 export class FloatingDockComponent implements OnChanges {
   @Input() diagram: go.Diagram | null = null;
+
+  // FontAwesome icons
+  faHand = faHand;
+  faArrowPointer = faArrowPointer;
+  faRotateLeft = faRotateLeft;
+  faRotateRight = faRotateRight;
 
   // Signals for reactive state
   toolMode = signal<ToolMode>('pan');

@@ -5,12 +5,14 @@
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faLock } from '@fortawesome/free-solid-svg-icons';
 import { NodeType } from '../../../models';
 
 @Component({
   selector: 'app-quick-node-type-chip',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FontAwesomeModule],
   template: `
     <button
       type="button"
@@ -39,7 +41,7 @@ import { NodeType } from '../../../models';
           class="inline-flex items-center h-4 px-1.5 text-[10px] border rounded border-[var(--badge-lock)] text-[var(--badge-lock)]"
           aria-label="MSN type cannot be hidden"
         >
-          🔒
+          <fa-icon [icon]="faLock" [fixedWidth]="true" size="xs" />
         </span>
         } @if (isAutoFolded && !isLocked) {
         <span
@@ -77,6 +79,9 @@ export class QuickNodeTypeChipComponent {
 
   @Output() chipClick = new EventEmitter<void>();
 
+  // FontAwesome icons
+  faLock = faLock;
+
   get tooltipText(): string {
     if (this.isLocked) {
       return 'MSN type cannot be hidden';
@@ -92,10 +97,12 @@ export class QuickNodeTypeChipComponent {
 
     if (this.isVisible) {
       baseClasses.push(
-        'bg-[var(--chip-visible-bg)] border-[var(--chip-visible-border)] text-[var(--chip-visible-text)]',
+        'bg-[var(--chip-visible-bg)] border-[var(--chip-visible-border)] text-[var(--chip-visible-text)]'
       );
     } else {
-      baseClasses.push('bg-transparent border-border text-muted-foreground opacity-60');
+      baseClasses.push(
+        'bg-transparent border-border text-muted-foreground opacity-60'
+      );
     }
 
     if (this.isLocked) {

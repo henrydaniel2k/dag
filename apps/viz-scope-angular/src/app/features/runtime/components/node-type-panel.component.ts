@@ -13,6 +13,12 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatDialog } from '@angular/material/dialog';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faTimes,
+  faList,
+  faRotateLeft,
+} from '@fortawesome/free-solid-svg-icons';
 import { VisibilityChipComponent } from '../../../shared/components/visibility-chip.component';
 import {
   FoldStateSegmentedControlComponent,
@@ -38,6 +44,7 @@ interface TypeCounts {
   standalone: true,
   imports: [
     CommonModule,
+    FontAwesomeModule,
     VisibilityChipComponent,
     FoldStateSegmentedControlComponent,
   ],
@@ -63,7 +70,7 @@ interface TypeCounts {
             class="ml-4 p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
             aria-label="Close panel"
           >
-            <span class="text-xl">✕</span>
+            <fa-icon [icon]="faTimes" size="lg" />
           </button>
         </div>
       </div>
@@ -121,7 +128,7 @@ interface TypeCounts {
                 title="Open node list (Node Group Panel)"
                 class="h-8 w-8 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
               >
-                <span class="text-lg">📋</span>
+                <fa-icon [icon]="faList" />
               </button>
 
               <!-- More actions -->
@@ -131,7 +138,7 @@ interface TypeCounts {
                 title="Reset this type to defaults"
                 class="h-8 w-8 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
               >
-                <span class="text-lg">↺</span>
+                <fa-icon [icon]="faRotateLeft" />
               </button>
             </div>
           </div>
@@ -149,7 +156,7 @@ interface TypeCounts {
           title="Reset all types to scope defaults"
           class="h-9 w-9 flex items-center justify-center text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 rounded transition-colors"
         >
-          <span class="text-lg">↺</span>
+          <fa-icon [icon]="faRotateLeft" />
         </button>
       </div>
     </div>
@@ -181,6 +188,11 @@ export class NodeTypePanelComponent {
 
   private readonly runtimeState = inject(RuntimeStateService);
   private readonly dialog = inject(MatDialog);
+
+  // FontAwesome icons
+  faTimes = faTimes;
+  faList = faList;
+  faRotateLeft = faRotateLeft;
 
   // State
   readonly scopeTypes = this.runtimeState.scopeTypes;

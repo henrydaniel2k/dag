@@ -6,8 +6,9 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faLayerGroup, faCircleInfo } from '@fortawesome/free-solid-svg-icons';
 
 @Component({
   selector: 'app-immersive-toggle',
@@ -15,13 +16,18 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   imports: [
     CommonModule,
     MatSlideToggleModule,
-    MatIconModule,
+    FontAwesomeModule,
     MatTooltipModule,
   ],
   template: `
-    <div class="flex items-center gap-2 px-4 py-2 border-l border-gray-300 dark:border-gray-700">
+    <div
+      class="flex items-center gap-2 px-4 py-2 border-l border-gray-300 dark:border-gray-700"
+    >
       <div class="relative">
-        <mat-icon class="text-gray-600 dark:text-gray-400">layers</mat-icon>
+        <fa-icon
+          [icon]="faLayerGroup"
+          class="text-gray-600 dark:text-gray-400"
+        />
         @if (immersiveMode) {
         <span
           class="absolute -top-1 -right-1 flex h-2 w-2"
@@ -46,13 +52,12 @@ import { MatTooltipModule } from '@angular/material/tooltip';
         <span class="text-sm font-medium">Immersive</span>
       </mat-slide-toggle>
 
-      <mat-icon
+      <fa-icon
+        [icon]="faCircleInfo"
         class="text-gray-600 dark:text-gray-400 cursor-help"
         matTooltip="Toggle Immersive Mode (I) - View multiple topologies simultaneously"
         matTooltipPosition="below"
-      >
-        info
-      </mat-icon>
+      />
     </div>
   `,
   styles: [
@@ -78,4 +83,8 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 export class ImmersiveToggleComponent {
   @Input() immersiveMode = false;
   @Output() toggle = new EventEmitter<boolean>();
+
+  // FontAwesome icons
+  faLayerGroup = faLayerGroup;
+  faCircleInfo = faCircleInfo;
 }

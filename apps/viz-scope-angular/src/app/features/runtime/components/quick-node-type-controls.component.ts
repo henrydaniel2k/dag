@@ -11,6 +11,8 @@ import {
   EventEmitter,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faList } from '@fortawesome/free-solid-svg-icons';
 import { QuickNodeTypeChipComponent } from './quick-node-type-chip.component';
 import { RuntimeStateService } from '../../../core/services/runtime-state.service';
 import { NodeType } from '../../../models';
@@ -18,7 +20,7 @@ import { NodeType } from '../../../models';
 @Component({
   selector: 'app-quick-node-type-controls',
   standalone: true,
-  imports: [CommonModule, QuickNodeTypeChipComponent],
+  imports: [CommonModule, FontAwesomeModule, QuickNodeTypeChipComponent],
   template: `
     <div
       class="flex items-center gap-2 px-4 py-2 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900"
@@ -30,7 +32,7 @@ import { NodeType } from '../../../models';
         title="Open Node Type Panel (T)"
         class="relative h-8 px-3 text-sm border border-gray-300 dark:border-gray-700 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors flex items-center gap-2"
       >
-        <span class="text-lg">📋</span>
+        <fa-icon [icon]="faList" />
         <span>Node Types</span>
         @if (hasNonDefaultSettings()) {
         <span
@@ -71,6 +73,9 @@ export class QuickNodeTypeControlsComponent {
   private readonly runtimeState = inject(RuntimeStateService);
 
   @Output() openPanel = new EventEmitter<void>();
+
+  // FontAwesome icons
+  faList = faList;
 
   // State from RuntimeStateService
   readonly scopeTypes = this.runtimeState.scopeTypes;

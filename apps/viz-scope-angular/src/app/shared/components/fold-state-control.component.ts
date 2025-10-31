@@ -5,13 +5,19 @@
 
 import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faChevronDown,
+  faChevronUp,
+  faArrowsUpDown,
+} from '@fortawesome/free-solid-svg-icons';
 
 export type FoldState = 'unfolded' | 'folded' | 'partial';
 
 @Component({
   selector: 'app-fold-state-control',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FontAwesomeModule],
   template: `
     <div
       class="inline-flex rounded-md border border-gray-300 dark:border-gray-700 overflow-hidden"
@@ -24,7 +30,7 @@ export type FoldState = 'unfolded' | 'folded' | 'partial';
         [title]="getTooltip('fold')"
         [class]="getButtonClass('folded')"
       >
-        <span class="text-lg">⬇️</span>
+        <fa-icon [icon]="faChevronDown" />
       </button>
 
       <!-- Partial Fold Button -->
@@ -35,7 +41,7 @@ export type FoldState = 'unfolded' | 'folded' | 'partial';
         [title]="getTooltip('partial')"
         [class]="getButtonClass('partial')"
       >
-        <span class="text-lg">↕️</span>
+        <fa-icon [icon]="faArrowsUpDown" />
       </button>
 
       <!-- Unfold All Button -->
@@ -46,7 +52,7 @@ export type FoldState = 'unfolded' | 'folded' | 'partial';
         [title]="getTooltip('unfold')"
         [class]="getButtonClass('unfolded')"
       >
-        <span class="text-lg">⬆️</span>
+        <fa-icon [icon]="faChevronUp" />
       </button>
     </div>
   `,
@@ -67,6 +73,11 @@ export class FoldStateSegmentedControlComponent {
   @Output() foldAll = new EventEmitter<void>();
   @Output() partialFold = new EventEmitter<void>();
   @Output() unfoldAll = new EventEmitter<void>();
+
+  // FontAwesome icons
+  faChevronDown = faChevronDown;
+  faChevronUp = faChevronUp;
+  faArrowsUpDown = faArrowsUpDown;
 
   getButtonClass(state: FoldState): string {
     const classes = [

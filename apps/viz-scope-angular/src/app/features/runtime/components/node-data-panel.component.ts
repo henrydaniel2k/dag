@@ -11,6 +11,8 @@ import {
   inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import { RuntimeStateService } from '../../../core/services/runtime-state.service';
 import { Node } from '../../../models';
 
@@ -37,7 +39,7 @@ interface MetricDisplay {
 @Component({
   selector: 'app-node-data-panel',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FontAwesomeModule],
   template: `
     @if (selectedNode()) { @let node = selectedNode();
     <div
@@ -80,7 +82,7 @@ interface MetricDisplay {
           (click)="close()"
           class="h-8 w-8 flex items-center justify-center text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors rounded"
         >
-          <span class="text-xl">✕</span>
+          <fa-icon [icon]="faTimes" size="lg" />
         </button>
       </div>
 
@@ -208,6 +210,9 @@ export class NodeDataPanelComponent {
   @Output() panelClose = new EventEmitter<void>();
 
   private readonly runtimeState = inject(RuntimeStateService);
+
+  // FontAwesome icons
+  faTimes = faTimes;
 
   // Expose METRIC_FAMILIES for template
   readonly METRIC_FAMILIES = METRIC_FAMILIES;

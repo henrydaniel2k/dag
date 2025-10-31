@@ -7,8 +7,13 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
-import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import {
+  faChevronDown,
+  faChevronRight,
+  faGripVertical,
+} from '@fortawesome/free-solid-svg-icons';
 import { RuntimeStateService } from '../../../core/services/runtime-state.service';
 import { Node } from '../../../models/node.model';
 
@@ -21,7 +26,7 @@ interface TreeNodeState {
 @Component({
   selector: 'app-navigation',
   standalone: true,
-  imports: [CommonModule, MatSelectModule, MatIconModule, MatTooltipModule],
+  imports: [CommonModule, MatSelectModule, MatTooltipModule, FontAwesomeModule],
   template: `
     <div
       class="border-r border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-900 flex flex-col h-full relative"
@@ -71,12 +76,12 @@ interface TreeNodeState {
           @if (hasChildren(treeNode.node)) {
           <button
             (click)="toggleExpand(treeNode.node.id, $event)"
-            class="p-0.5 hover:bg-gray-300 dark:hover:bg-gray-700 rounded flex-shrink-0"
-            [attr.aria-label]="treeNode.isExpanded ? 'Collapse' : 'Expand'"
+            class="flex items-center justify-center w-4 h-4"
           >
-            <mat-icon class="!w-4 !h-4 text-base">
-              {{ treeNode.isExpanded ? 'expand_more' : 'chevron_right' }}
-            </mat-icon>
+            <fa-icon
+              [icon]="treeNode.isExpanded ? faChevronDown : faChevronRight"
+              class="text-base"
+            />
           </button>
           } @else {
           <span class="w-5 flex-shrink-0"></span>
@@ -130,9 +135,7 @@ interface TreeNodeState {
         <div
           class="absolute top-1/2 right-0 -translate-y-1/2 translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity"
         >
-          <mat-icon class="!w-4 !h-4 text-base text-gray-500">
-            drag_indicator
-          </mat-icon>
+          <fa-icon [icon]="faGripVertical" class="text-base text-gray-500" />
         </div>
       </div>
     </div>
@@ -162,6 +165,11 @@ interface TreeNodeState {
 })
 export class NavigationComponent {
   private readonly runtimeState = inject(RuntimeStateService);
+
+  // FontAwesome icons
+  readonly faChevronDown = faChevronDown;
+  readonly faChevronRight = faChevronRight;
+  readonly faGripVertical = faGripVertical;
 
   // Resizable width with localStorage persistence
   readonly navWidth = (() => {
