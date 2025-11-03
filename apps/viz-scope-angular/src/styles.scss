@@ -1,45 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
 
+// Import ng-zorro-antd styles
+@use '../../../node_modules/ng-zorro-antd/ng-zorro-antd.css'; // Temporarily disabled - install ng-zorro first
+
 // Theme variables and custom CSS
 @use './styles/themes/variables';
 @use './styles/themes/light-theme';
 @use './styles/themes/dark-theme';
 @use './styles/gojs-theme';
 
-@use "tailwindcss";
-// Import ng-zorro-antd styles
-// @import 'ng-zorro-antd/ng-zorro-antd.scss'; // Temporarily disabled - install ng-zorro first
+@use 'tailwind.css';
 
-// // Global resets and base styles
-// * {
-//   margin: 0;
-//   padding: 0;
-//   box-sizing: border-box;
-// }
+html,
+body {
+  height: 100%;
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+}
 
-// html,
-// body {
-//   height: 100%;
-//   width: 100%;
-//   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
-//     'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
-//     'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
-// }
-
-// // Smooth theme transitions
-// body {
-//   transition: background-color 0.3s ease, color 0.3s ease;
-// }
-
-// // Utility classes
-// .flex-center {
-//   display: flex;
-//   align-items: center;
-//   justify-content: center;
-// }
-
-// .text-truncate {
-//   overflow: hidden;
-//   text-overflow: ellipsis;
-//   white-space: nowrap;
-// }
+// Smooth theme transitions
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
